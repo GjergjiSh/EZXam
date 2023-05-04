@@ -1,0 +1,31 @@
+services:
+  db:
+    image: mysql
+    restart: on-failure
+    hostname: "sqldb"
+    healthcheck:
+      test: "exit 0"
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: ezxam
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 123Stella
+    volumes:
+      - "ezxam:/var/lib/mysql"
+
+  myapp:
+    image: ezxam
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://sqldb:3306/ezxam?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: 123Stella
+      SPRING_DATASOURCE_DRIVERCLASSNAME: com.mysql.jdbc.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
+
+volumes:
+  ezxam:
