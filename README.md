@@ -1,8 +1,8 @@
 # Infrastructure
 
 ## Docker file
-The Dockerfile refers to the ezxam.jar in the target. The name of the jar is defined in the pom under 
-the tag: `finalName`. If the dev changes the name inside this tag, please change also the Dockerfile to refer to this
+The Dockerfile refers to the ezxam.jar in the target folder. Use "Maven package" to create it.
+The name of the jar is defined in the pom under the tag: `finalName`. If the dev changes the name inside this tag, please change also the Dockerfile to refer to this
 new name.
 
 To create the image of this Docker file, use:
