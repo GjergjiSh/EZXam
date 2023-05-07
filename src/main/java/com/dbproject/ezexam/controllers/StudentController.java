@@ -1,16 +1,40 @@
 package com.dbproject.ezexam.controllers;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import com.dbproject.ezexam.entities.Student;
+import com.dbproject.ezexam.services.StudentService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.Optional;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping(path = "/students")
 public class StudentController {
+    private final StudentService studentService;
 
-    @GetMapping("/students/{id}")
-    @ResponseBody
-    public String getStudent(Long id) {
-        return "This rest call needs to be set";
+    @GetMapping("/")
+    public ResponseEntity<Object> getStudents() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(studentService.getAllStudents());
     }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity<Optional<Student>> getStudentById(@PathVariable Long id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(studentService.getStudentById(id));
+    }
+
+
+
+
 
 }
