@@ -24,7 +24,7 @@ public class StudentService {
         return studentRepository.findById(id);
     }
 
-    public Optional<Student> getStudentByFullName(String name, String lastname) {
-        return studentRepository.findByNameAndLastname(name,lastname);
+    public List<Student> getStudentsByFullName(String name, String lastname) {
+        return studentRepository.findAllByNameAndLastname(name,lastname);
     }
 }

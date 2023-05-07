@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -35,15 +36,13 @@ public class StudentController {
 
     @GetMapping("/fullname")
     @ResponseBody
-    public ResponseEntity<Student> getStudentByFullName(
+    public ResponseEntity<Object> getStudentByFullName(
             @RequestParam("name") String name,
             @RequestParam("lastname") String lastname) {
-        Optional<Student> student = studentService.getStudentByFullName(name, lastname);
-        return student.map(value -> ResponseEntity
+        List<Student> students = studentService.getStudentsByFullName(name, lastname);
+        return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(value)).orElseGet(() -> ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .build());
+                .body(students);
     }
 }
