@@ -34,6 +34,15 @@ public class StudentController {
                 .body(studentService.getStudentById(id));
     }
 
+    @GetMapping("/matnr/{matnr}")
+    @ResponseBody
+    public ResponseEntity<Optional<Student>> getStudentById(@PathVariable String matnr) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(studentService.getStudentByMatnr(matnr));
+    }
+
     @GetMapping("/fullname")
     @ResponseBody
     public ResponseEntity<Object> getStudentByFullName(

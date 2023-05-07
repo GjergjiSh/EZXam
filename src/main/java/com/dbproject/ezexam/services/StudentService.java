@@ -24,6 +24,10 @@ public class StudentService {
         return studentRepository.findById(id);
     }
 
+    public Optional<Student> getStudentByMatnr(String matnr) {
+        return studentRepository.findByMatnr(matnr);
+    }
+
     public List<Student> getStudentsByFullName(String name, String lastname) {
         return studentRepository.findAllByNameAndLastname(name,lastname);
     }

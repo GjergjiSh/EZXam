@@ -18,7 +18,7 @@ public class Student {
     private String name;
 
     @Getter
-    @Column(name = "matnr")
+    @Column(name = "matnr", unique = true)
     private String matnr;
 
     @Getter
