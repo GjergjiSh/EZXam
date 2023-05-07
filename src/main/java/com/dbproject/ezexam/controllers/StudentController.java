@@ -24,7 +24,7 @@ public class StudentController {
                 .body(studentService.getAllStudents());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     @ResponseBody
     public ResponseEntity<Optional<Student>> getStudentById(@PathVariable Long id) {
         return ResponseEntity
@@ -33,8 +33,17 @@ public class StudentController {
                 .body(studentService.getStudentById(id));
     }
 
-
-
-
-
+    @GetMapping("/fullname")
+    @ResponseBody
+    public ResponseEntity<Student> getStudentByFullName(
+            @RequestParam("name") String name,
+            @RequestParam("lastname") String lastname) {
+        Optional<Student> student = studentService.getStudentByFullName(name, lastname);
+        return student.map(value -> ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(value)).orElseGet(() -> ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .build());
+    }
 }

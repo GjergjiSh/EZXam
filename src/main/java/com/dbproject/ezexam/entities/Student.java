@@ -17,5 +17,14 @@ public class Student {
     @Column(name = "name")
     private String name;
 
+    @Getter
+    @Column(name = "matnr")
+    private String matnr;
+
+    @Getter
+    @Column(name = "lastname")
+    private String lastname;
+
+
     // Add any other necessary fields, constructors, getters/setters, etc.
 }
