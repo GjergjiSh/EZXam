@@ -14,3 +14,9 @@ INSERT INTO exam_questions (exam_id, question_id) VALUES (1, 1);
 INSERT INTO exam_questions (exam_id, question_id) VALUES (1, 2);
 INSERT INTO exam_questions (exam_id, question_id) VALUES (2, 3);
 INSERT INTO exam_questions (exam_id, question_id) VALUES (2, 4);
+
+INSERT INTO professors (name, lastname) VALUES ('Billy', 'Smith');
+INSERT INTO professors (name, lastname) VALUES ('Jimmy', 'Johnson');
+
+INSERT INTO enrollments (exam_id, professor_id, student_id) VALUES (1, 1, 1);
+INSERT INTO enrollments (exam_id, professor_id, student_id) VALUES (2, 2, 2);
