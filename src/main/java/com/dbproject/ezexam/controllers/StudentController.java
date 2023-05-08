@@ -26,7 +26,6 @@ public class StudentController {
     }
 
     @GetMapping("/id/{id}")
-    @ResponseBody
     public ResponseEntity<Optional<Student>> getStudentById(@PathVariable Long id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -35,7 +34,6 @@ public class StudentController {
     }
 
     @GetMapping("/matnr/{matnr}")
-    @ResponseBody
     public ResponseEntity<Optional<Student>> getStudentById(@PathVariable String matnr) {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -44,7 +42,6 @@ public class StudentController {
     }
 
     @GetMapping("/fullname")
-    @ResponseBody
     public ResponseEntity<Object> getStudentByFullName(
             @RequestParam("name") String name,
             @RequestParam("lastname") String lastname) {
