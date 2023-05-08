@@ -20,4 +20,8 @@ public class ExamService {
     public Optional<Exam> getExamById(Long id) {
         return examRepo.findById(id);
     }
+
+    public Exam saveExam(Exam exam) {
+        return examRepo.save(exam);
+    }
 }
