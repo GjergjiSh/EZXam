@@ -2,6 +2,7 @@ package com.dbproject.ezexam.entities;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Entity
@@ -15,14 +16,17 @@ public class Student {
 
     @Getter
     @Column(name = "name")
+    @NotBlank
     private String name;
 
     @Getter
     @Column(name = "matnr", unique = true)
+    @NotBlank
     private String matnr;
 
     @Getter
     @Column(name = "lastname")
+    @NotBlank
     private String lastname;
 
 
