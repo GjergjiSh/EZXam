@@ -25,4 +25,13 @@ public class Exam {
     )
     @JsonIgnoreProperties("exams")
     private List<Question> questions;
+
+    @Override
+    public String toString() {
+        return "Exam{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", questions=" + questions +
+                '}';
+    }
 }

@@ -17,4 +17,13 @@ public class Professor {
 
     @NotBlank
     private String lastname;
+
+    @Override
+    public String toString() {
+        return "Professor{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lastname='" + lastname + '\'' +
+                '}';
+    }
 }

@@ -29,6 +29,16 @@ public class Student {
     @NotBlank
     private String lastname;
 
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", matnr='" + matnr + '\'' +
+                ", lastname='" + lastname + '\'' +
+                '}';
+    }
+
 
     // Add any other necessary fields, constructors, getters/setters, etc.
 }

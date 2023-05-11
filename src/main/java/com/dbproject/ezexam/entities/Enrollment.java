@@ -23,5 +23,15 @@ public class Enrollment {
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
+    @Override
+    public String toString() {
+        return "Enrollment{" +
+                "id=" + id +
+                ", exam=" + exam +
+                ", professor=" + professor +
+                ", student=" + student +
+                '}';
+    }
+
     // Constructors, getters, and setters
 }
