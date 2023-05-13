@@ -2,22 +2,23 @@ package com.dbproject.ezexam.services;
 
 import com.dbproject.ezexam.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Service
-public class UserService implements UserDetailsService {
+public class UserService {
     @Autowired
-    private UserRepo userRepo;
+    AuthenticationProvider authenticationProvider;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+    @Autowired
+    UserRepo userRepo;
 
+    // to implement these methods we first need DTO for professor and controller for it.
+    // Then professor controller will use this service for auth/registr process
+    public void Authenticate(){
 
+    }
+    public void Register(){
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var user = userRepo.findByUsername(username);
-        return user.get();
     }
 }
