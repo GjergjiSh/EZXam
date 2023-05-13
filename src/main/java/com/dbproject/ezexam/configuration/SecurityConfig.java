@@ -1,6 +1,5 @@
 package com.dbproject.ezexam.configuration;
 
-import com.dbproject.ezexam.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
@@ -33,11 +32,19 @@ public class SecurityConfig {
         return authProvider;
     }
 
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authenticationProvider());
     }
 
-    protected void configure(HttpSecurity http) throws Exception {
-        //we have to later provide config for our requests
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests() //we have to change it later to provide actual filters for our controllers
+                .anyRequest().anonymous()
+                    .and()
+                .httpBasic();
+
+        return http.build();
     }
+
 }
