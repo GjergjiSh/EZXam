@@ -1,7 +1,9 @@
 package com.dbproject.ezexam.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -31,11 +33,12 @@ public class Question {
     private double points;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "topic_id")
+    @JsonBackReference
     private Topic topic;
 
     @OneToMany(mappedBy = "question")
+    @JsonManagedReference
     private List<Criteria> criterias;
 
     // other attributes

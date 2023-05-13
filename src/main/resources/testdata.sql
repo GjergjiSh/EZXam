@@ -1,21 +1,14 @@
--- Insert dummy subjects
-INSERT INTO subjects (name) VALUES
-                                ('Subject 1'),
-                                ('Subject 2'),
-                                ('Subject 3');
+-- Insert data into the professors table
+INSERT INTO professors (name, lastname) VALUES ('Professor 1', 'Lastname 1');
+INSERT INTO professors (name, lastname) VALUES ('Professor 2', 'Lastname 2');
+INSERT INTO professors (name, lastname) VALUES ('Professor 3', 'Lastname 3');
 
--- Insert dummy professors
-INSERT INTO professors (name, lastname) VALUES
-                                            ('Professor 1', 'Lastname 1'),
-                                            ('Professor 2', 'Lastname 2'),
-                                            ('Professor 3', 'Lastname 3');
+-- Insert data into the subjects table
+INSERT INTO subjects (name, professor_id) VALUES ('Subject 1', 1);
+INSERT INTO subjects (name, professor_id) VALUES ('Subject 2', 2);
+INSERT INTO subjects (name, professor_id) VALUES ('Subject 3', 3);
 
--- Associate professors with subjects
-INSERT INTO professor_subject (professor_id, subject_id) VALUES
-                                                             (1, 1),
-                                                             (1, 2),
-                                                             (2, 2),
-                                                             (3, 3);
+
 
 -- Insert dummy students
 INSERT INTO students (name, matnr, lastname) VALUES

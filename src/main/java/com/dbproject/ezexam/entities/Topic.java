@@ -1,6 +1,8 @@
 package com.dbproject.ezexam.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -21,11 +23,12 @@ public class Topic {
     private String name;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "subject_id")
+    @JsonBackReference
     private Subject subject;
 
     @OneToMany(mappedBy = "topic")
+    @JsonManagedReference
     private List<Question> questions;
 
     // other attributes

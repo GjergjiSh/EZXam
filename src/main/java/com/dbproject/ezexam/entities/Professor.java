@@ -1,6 +1,7 @@
 package com.dbproject.ezexam.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -23,13 +24,9 @@ public class Professor {
     @NotBlank
     private String lastname;
 
-    @ManyToMany
-    @JoinTable(
-            name = "professor_subject",
-            joinColumns = @JoinColumn(name = "professor_id"),
-            inverseJoinColumns = @JoinColumn(name = "subject_id")
-    )
-    @JsonIgnore
+
+    @OneToMany(mappedBy = "professor")
+    @JsonManagedReference
     private List<Subject> subjects;
 
     // other attributes

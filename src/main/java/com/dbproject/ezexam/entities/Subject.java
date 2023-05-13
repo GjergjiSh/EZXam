@@ -1,6 +1,8 @@
 package com.dbproject.ezexam.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -20,10 +22,13 @@ public class Subject {
     private String name;
 
     @OneToMany(mappedBy = "subject")
+    @JsonManagedReference
     private List<Topic> topics;
 
-    @ManyToMany(mappedBy = "subjects")
-    private List<Professor> professors;
+    @ManyToOne
+    @JoinColumn(name = "professor_id")
+    @JsonBackReference
+    private Professor professor;
 
     // other attributes
 
@@ -33,7 +38,7 @@ public class Subject {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", topics=" + topics +
-                ", professors=" + professors +
+                ", professor=" + professor +
                 '}';
     }
 
