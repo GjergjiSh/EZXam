@@ -7,31 +7,29 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-@Entity
 @Table(name = "exams")
+@Entity
 public class Exam {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "exam_questions",
-            joinColumns = @JoinColumn(name = "exam_id"),
-            inverseJoinColumns = @JoinColumn(name = "question_id")
-    )
-    @JsonIgnoreProperties("exams")
-    private List<Question> questions;
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
+
+    // other attributes
 
     @Override
     public String toString() {
         return "Exam{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", questions=" + questions +
+                ", subject=" + subject +
+                ", student=" + student +
                 '}';
     }
 }

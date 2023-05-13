@@ -5,12 +5,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
+
 import java.util.List;
 
-@Entity
 @Getter
-@Table(name = "professors")
-public class Professor {
+@Entity
+@Table(name = "topics")
+public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,28 +20,23 @@ public class Professor {
     @NotBlank
     private String name;
 
-    @Column(name = "lastname")
-    @NotBlank
-    private String lastname;
-
-    @ManyToMany
-    @JoinTable(
-            name = "professor_subject",
-            joinColumns = @JoinColumn(name = "professor_id"),
-            inverseJoinColumns = @JoinColumn(name = "subject_id")
-    )
+    @ManyToOne
     @JsonIgnore
-    private List<Subject> subjects;
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
+
+    @OneToMany(mappedBy = "topic")
+    private List<Question> questions;
 
     // other attributes
 
     @Override
     public String toString() {
-        return "Professor{" +
+        return "Topic{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", subjects=" + subjects +
+                ", subject=" + subject +
+                ", questions=" + questions +
                 '}';
     }
 }

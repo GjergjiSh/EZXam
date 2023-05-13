@@ -7,10 +7,10 @@ import lombok.Getter;
 
 import java.util.List;
 
-@Entity
 @Getter
-@Table(name = "professors")
-public class Professor {
+@Entity
+@Table(name = "subjects")
+public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,28 +19,22 @@ public class Professor {
     @NotBlank
     private String name;
 
-    @Column(name = "lastname")
-    @NotBlank
-    private String lastname;
+    @OneToMany(mappedBy = "subject")
+    private List<Topic> topics;
 
-    @ManyToMany
-    @JoinTable(
-            name = "professor_subject",
-            joinColumns = @JoinColumn(name = "professor_id"),
-            inverseJoinColumns = @JoinColumn(name = "subject_id")
-    )
-    @JsonIgnore
-    private List<Subject> subjects;
+    @ManyToMany(mappedBy = "subjects")
+    private List<Professor> professors;
 
     // other attributes
 
     @Override
     public String toString() {
-        return "Professor{" +
+        return "Subject{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", subjects=" + subjects +
+                ", topics=" + topics +
+                ", professors=" + professors +
                 '}';
     }
+
 }

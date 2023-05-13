@@ -1,34 +1,57 @@
 package com.dbproject.ezexam.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-@Entity
 @Table(name = "questions")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "exams"})
+@Entity
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "description")
+    @NotBlank
+    @Size(max = 256)
+    private String description;
+
+    @Column(name = "text")
+    @NotBlank
     private String text;
 
-    private float total_points;
+    @Column(name = "points")
+    @NotBlank
+    private double points;
 
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "topic_id")
+    private Topic topic;
 
-    @ManyToMany(mappedBy = "questions")
-    private List<Exam> exams;
+    @OneToMany(mappedBy = "question")
+    private List<Criteria> criterias;
+
+    // other attributes
 
     @Override
     public String toString() {
         return "Question{" +
                 "id=" + id +
+                ", description='" + description + '\'' +
                 ", text='" + text + '\'' +
-                ", total_points=" + total_points +
+                ", points=" + points +
+                ", topic=" + topic +
+                ", criterias=" + criterias +
                 '}';
     }
+
+
 }
+
