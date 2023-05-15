@@ -2,6 +2,7 @@ package com.dbproject.ezexam.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class Exam {
 
     @ManyToOne
     @JoinColumn(name = "exam_session_id")
+    @JsonBackReference
     private ExamSession examSession;
 
     @ManyToOne
@@ -25,6 +27,13 @@ public class Exam {
     @JsonBackReference
     @NotBlank
     private Student student;
+
+    @OneToMany(mappedBy = "exam")
+    @JsonManagedReference
+    private List<Answer> answers;
+
+    @Column(name = "duration")
+    private int duration;
 
     // other attributes
 
