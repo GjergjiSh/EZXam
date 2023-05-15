@@ -3,6 +3,7 @@ package com.dbproject.ezexam.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class Exam {
     @ManyToOne
     @JoinColumn(name = "student_id")
     @JsonBackReference
+    @NotBlank
     private Student student;
 
     // other attributes

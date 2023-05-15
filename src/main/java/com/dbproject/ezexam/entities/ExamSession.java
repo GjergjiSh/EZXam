@@ -3,6 +3,7 @@ package com.dbproject.ezexam.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -29,5 +30,6 @@ public class ExamSession {
     private Boolean finished;
 
     @Column(name = "date")
+    @NotBlank
     private LocalDate date;
 }

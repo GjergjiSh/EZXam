@@ -35,6 +35,7 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "topic_id")
     @JsonBackReference
+    @NotBlank
     private Topic topic;
 
     @OneToMany(mappedBy = "question")

@@ -25,6 +25,7 @@ public class Topic {
     @ManyToOne
     @JoinColumn(name = "subject_id")
     @JsonBackReference
+    @NotBlank
     private Subject subject;
 
     @OneToMany(mappedBy = "topic")
