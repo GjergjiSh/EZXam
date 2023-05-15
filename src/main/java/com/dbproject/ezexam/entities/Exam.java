@@ -15,8 +15,8 @@ public class Exam {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "subject_id")
-    private Subject subject;
+    @JoinColumn(name = "exam_session_id")
+    private ExamSession examSession;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
@@ -28,7 +28,7 @@ public class Exam {
     public String toString() {
         return "Exam{" +
                 "id=" + id +
-                ", subject=" + subject +
+                ", examsession=" + examSession +
                 ", student=" + student +
                 '}';
     }

@@ -30,6 +30,10 @@ public class Subject {
     @JsonBackReference
     private Professor professor;
 
+    @OneToMany(mappedBy = "subject")
+    @JsonManagedReference
+    private List<ExamSession> examSessions;
+
     // other attributes
 
     @Override
