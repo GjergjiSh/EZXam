@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -23,4 +24,10 @@ public class ExamSession {
     @OneToMany(mappedBy = "examSession")
     @JsonManagedReference
     private List<Exam> exams;
+
+    @Column(name = "finished")
+    private Boolean finished;
+
+    @Column(name = "date")
+    private LocalDate date;
 }
