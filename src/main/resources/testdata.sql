@@ -8,6 +8,12 @@ INSERT INTO subjects (name, professor_id) VALUES
 ('Mathematics', 1),
 ('Physics', 2);
 
+-- Add dummy data to the students table
+INSERT INTO students (name, matnr, lastname) VALUES
+('Student 1', '123456', 'Lastname 1'),
+('Student 2', '234567', 'Lastname 2'),
+('Student 3', '345678', 'Lastname 3');
+
 -- Add dummy data to the exam_sessions table
 INSERT INTO exam_sessions (subject_id, finished, date) VALUES
 (1, true, '2023-05-01'),

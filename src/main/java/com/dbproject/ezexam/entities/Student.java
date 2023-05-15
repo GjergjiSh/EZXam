@@ -1,6 +1,7 @@
 package com.dbproject.ezexam.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Entity
+@Getter
 @Table(name = "students")
 public class Student {
     @Id
@@ -27,6 +29,7 @@ public class Student {
     private String lastname;
 
     @OneToMany(mappedBy = "student")
+    @JsonManagedReference
     private List<Exam> exams;
 
     // Constructors, getters, and setters
