@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:insert="layout.html :: config"></head>
+
+<body>
+<div class="header">
+    <span class="username">Professor's name</span>
+    <button class="btn btn-secondary">Log out</button>
+</div>
+
+<div class="tabs">
+    <button class="my-subject-tab btn btn-primary">My subjects</button>
+    <button class="btn btn-outline-primary">My sessions</button>
+</div>
+
+<div class="search-bar">
+    <input class="form-control" id="filter" type="text" placeholder="Search...">
+</div>
+
+<div x-data="{subjects: []}" x-init="subjects = getSubjects()">
+    <table class="table subjects-table">
+        <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody id="subjects-table-body">
+        <template x-for="subject in subjects">
+            <tr>
+                <td x-text="subject.name">Mark</td>
+                <td class="align-middle">
+                    <div class="buttons">
+                        <button class="edit-button btn btn-secondary">Edit</button>
+                        <button class="btn btn-primary">Start session</button>
+                    </div>
+                </td>
+
+            </tr>
+        </template>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript" src="/js/services/ApiService.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#filter").on("keyup", function () {
+            const value = $(this).val().toLowerCase();
+            $("#subjects-table-body tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+
+    async function getSubjects() {
+        return await ApiService.getRequest('subjects')
+    }
+</script>
+
+<style>
+    .header {
+        align-items: center;
+        display: flex;
+        justify-content: end;
+        margin: 8px 8px 4% 0;
+    }
+
+    .username {
+        margin-right: 8px;
+    }
+
+    .tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 4%;
+    }
+
+    .search-bar {
+        width: 20%;
+        margin-left: 25%;
+    }
+
+    .my-subject-tab {
+        margin-right: 8px;
+    }
+
+    .subjects-table {
+        margin: auto;
+        width: 50%
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: end;
+    }
+
+    .edit-button {
+        margin-right: 8px;
+    }
+
+</style>
