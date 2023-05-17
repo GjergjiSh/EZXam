@@ -1,17 +1,19 @@
 package com.dbproject.ezexam.entities;
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
+
 import java.util.List;
 
-@Entity
 @Getter
-@Table(name = "students")
-public class Student {
+@Entity
+@Table(name = "topics")
+public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,28 +22,25 @@ public class Student {
     @NotBlank
     private String name;
 
-    @Column(name = "matnr", unique = true)
+    @ManyToOne
+    @JoinColumn(name = "subject_id")
+    @JsonBackReference
     @NotBlank
-    private String matnr;
+    private Subject subject;
 
-    @Column(name = "lastname")
-    @NotBlank
-    private String lastname;
-
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "topic")
     @JsonManagedReference
-    private List<Exam> exams;
+    private List<Question> questions;
 
-    // Constructors, getters, and setters
+    // other attributes
 
-    // Override toString() method
     @Override
     public String toString() {
-        return "Student{" +
+        return "Topic{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", matnr='" + matnr + '\'' +
-                ", lastname='" + lastname + '\'' +
+                ", subject=" + subject +
+                ", questions=" + questions +
                 '}';
     }
 }

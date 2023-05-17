@@ -1,6 +1,6 @@
 package com.dbproject.ezexam.entities;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -10,8 +10,8 @@ import java.util.List;
 
 @Entity
 @Getter
-@Table(name = "students")
-public class Student {
+@Table(name = "professors")
+public class Professor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,28 +20,24 @@ public class Student {
     @NotBlank
     private String name;
 
-    @Column(name = "matnr", unique = true)
-    @NotBlank
-    private String matnr;
-
     @Column(name = "lastname")
     @NotBlank
     private String lastname;
 
-    @OneToMany(mappedBy = "student")
+
+    @OneToMany(mappedBy = "professor")
     @JsonManagedReference
-    private List<Exam> exams;
+    private List<Subject> subjects;
 
-    // Constructors, getters, and setters
+    // other attributes
 
-    // Override toString() method
     @Override
     public String toString() {
-        return "Student{" +
+        return "Professor{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", matnr='" + matnr + '\'' +
                 ", lastname='" + lastname + '\'' +
+                ", subjects=" + subjects +
                 '}';
     }
 }
