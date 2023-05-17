@@ -19,13 +19,13 @@ public class ExamController {
     private final ExamService examService;
     private final QuestionService questionService;
 
-//    @GetMapping("/")
-//    public ResponseEntity<Object> getAllExams() {
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(examService.getAllExams());
-//    }
+    @GetMapping("/")
+    public ResponseEntity<Object> getAllExams() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(examService.getAllExams());
+    }
 //
 //    @GetMapping("/id/{id}")
 //    public ResponseEntity<Optional<Exam>> getExamById(@PathVariable Long id) {
