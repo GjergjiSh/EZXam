@@ -12,6 +12,11 @@ import java.util.List;
 @Getter
 @Table(name = "professors")
 public class Professor {
+    public Professor(String name, String lastname, User user){
+        this.name = name;
+        this.lastname = lastname;
+        this.user = user;
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,6 +28,11 @@ public class Professor {
     @Column(name = "lastname")
     @NotBlank
     private String lastname;
+
+
+    @OneToOne(mappedBy = "professor")
+    @NotBlank
+    private User user;
 
 
     @OneToMany(mappedBy = "professor")
