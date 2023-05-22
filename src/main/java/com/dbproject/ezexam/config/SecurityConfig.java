@@ -1,4 +1,4 @@
-package com.dbproject.ezexam.configuration;
+package com.dbproject.ezexam.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

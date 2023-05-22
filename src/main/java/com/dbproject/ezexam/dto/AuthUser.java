@@ -1,6 +1,5 @@
 package com.dbproject.ezexam.dto;
 
-import com.dbproject.ezexam.configuration.Role;
 import lombok.Data;
 import lombok.NonNull;
 

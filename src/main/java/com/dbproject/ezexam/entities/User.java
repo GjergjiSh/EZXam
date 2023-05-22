@@ -1,6 +1,6 @@
 package com.dbproject.ezexam.entities;
 
-import com.dbproject.ezexam.configuration.Role;
+import com.dbproject.ezexam.config.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -20,6 +20,8 @@ public class User implements UserDetails {
         this.userRole = userRole;
     }
 
+    public User(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,8 +32,9 @@ public class User implements UserDetails {
     @NotBlank
     private Role userRole;
 
-    @OneToOne
-    @JoinColumn(name = "professor_id", referencedColumnName = "id")
+
+    @OneToOne(mappedBy = "user")
+    @NotBlank
     private Professor professor;
 
 

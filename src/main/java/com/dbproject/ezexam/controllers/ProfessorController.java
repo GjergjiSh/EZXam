@@ -1,6 +1,6 @@
 package com.dbproject.ezexam.controllers;
 
-import com.dbproject.ezexam.configuration.Role;
+import com.dbproject.ezexam.config.Role;
 import com.dbproject.ezexam.dto.AddProfessor;
 import com.dbproject.ezexam.dto.AddUser;
 import com.dbproject.ezexam.entities.Professor;
