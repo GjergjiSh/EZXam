@@ -42,7 +42,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests() //we have to change it later to provide actual filters for our controllers
                 .anyRequest().anonymous()
                     .and()
-                .httpBasic();
+                .httpBasic().and()
+                .csrf().disable();
 
         return http.build();
     }
