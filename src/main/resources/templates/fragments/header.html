@@ -1,0 +1,12 @@
+<div class="header" th:fragment="header(previousView)">
+    <!--TODO: get professor name from user entity. Blocked by #15-->
+    <span>
+        <span class="username">Professor's name</span>
+        <button class="btn btn-secondary">Log out</button>
+    </span>
+    <div x-show="previousView !== null" x-cloak>
+        <button class="btn btn-outline-secondary" @click=changeView(previousView)>Back</button>
+    </div>
+</div>
+
+

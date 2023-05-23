@@ -1,0 +1,31 @@
+<div th:fragment="sessions-table(sessions)">
+    <div th:insert="~{fragments/tabs.html:: tabs}"></div>
+    <div th:insert="~{fragments/search-bar.html :: searchBar(columnToFilterId='subject-name')}"></div>
+    <div>
+        <table class="table centred-table">
+            <thead>
+            <tr>
+                <th scope="col">Subject</th>
+                <th scope="col">Date</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <template x-for="session in sessions">
+                <tr>
+                    <td x-text="session.subjectName" id="subject-name"></td>
+                    <td x-text="session.date"></td>
+                    <td class="align-middle">
+                        <div class="row-buttons">
+                            <button class="btn btn-secondary" @click=changeView('session-exams',session)>
+                                Exams
+                            </button>
+                            <button class="btn btn-primary" @click=changeView('session-analysis',session)>Analysis</button>
+                        </div>
+                    </td>
+                </tr>
+            </template>
+            </tbody>
+        </table>
+    </div>
+</div>
