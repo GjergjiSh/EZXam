@@ -1,7 +1,7 @@
 -- Add dummy data to the users table
 INSERT INTO users (username, password, user_role) VALUES
-                                            ('username1', 'password1', 0),
-                                            ('username2', 'password1', 0);
+                                            ('test1', 'test1', 0),
+                                            ('test2', 'test2', 0);
 
 -- Add dummy data to the professors table
 INSERT INTO professors (name, lastname, user_id) VALUES
