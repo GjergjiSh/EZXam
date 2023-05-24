@@ -39,9 +39,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests() //we have to change it later to provide actual filters for our controllers
-                .anyRequest().anonymous()
-                    .and()
+                .authorizeHttpRequests()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/login-registration-view")
+                        .permitAll()
+                )
                 .httpBasic().and()
                 .csrf().disable();
 

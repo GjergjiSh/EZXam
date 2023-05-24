@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head th:insert="layout.html :: config"></head>
+<head>
+</head>
+<body>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div x-data="{ activeForm: 'login' }">
+                <div class="d-flex mb-4">
+                    <button
+                            class="btn btn-primary me-2"
+                            :class="{ 'btn-success': activeForm === 'login' }"
+                            @click="activeForm = 'login'"
+                    >
+                        Login
+                    </button>
+                    <button
+                            class="btn btn-primary"
+                            :class="{ 'btn-success': activeForm === 'register' }"
+                            @click="activeForm = 'register'"
+                    >
+                        Register
+                    </button>
+                </div>
+
+                <div x-show="activeForm === 'login'">
+                    <h3>Login</h3>
+                    <form>
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="loginEmail" placeholder="Enter email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" placeholder="Enter password">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+
+                <div x-show="activeForm === 'register'">
+                    <h3>Register</h3>
+                    <form>
+                        <div class="mb-3">
+                            <label for="registerName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="registerName" placeholder="Enter name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="registerEmail" placeholder="Enter email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="registerPassword" placeholder="Enter password">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
