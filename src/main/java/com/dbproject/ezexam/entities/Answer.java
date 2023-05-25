@@ -17,7 +17,7 @@ public class Answer {
 
     @ManyToOne
     @JoinColumn(name = "exam_id")
-    @JsonBackReference
+    @JsonBackReference("answerExam")
     private Exam exam;
 
     @Column(name = "text")
@@ -33,7 +33,7 @@ public class Answer {
     private double achievedPoints;
 
     @OneToMany(mappedBy = "answer")
-    @JsonManagedReference
+    @JsonManagedReference("answerCriterias")
     private List<AnswerCriteria> answerCriterias;
 
     // other attributes and relationships

@@ -22,28 +22,36 @@ public class Subject {
     private String name;
 
     @OneToMany(mappedBy = "subject")
-    @JsonManagedReference
+    @JsonManagedReference("subjectTopics")
     private List<Topic> topics;
 
     @ManyToOne
     @JoinColumn(name = "professor_id")
-    @JsonBackReference
+    @JsonBackReference("professorSubjects")
     private Professor professor;
 
     @OneToMany(mappedBy = "subject")
-    @JsonManagedReference
+    @JsonManagedReference("subjectSessions")
     private List<ExamSession> examSessions;
 
     // other attributes
 
-    @Override
-    public String toString() {
-        return "Subject{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", topics=" + topics +
-                ", professor=" + professor +
-                '}';
+//    @Override
+//    public String toString() {
+//        return "Subject{" +
+//                "id=" + id +
+//                ", name='" + name + '\'' +
+//                //", topics=" + topics +
+//                ", professor=" + professor +
+//                '}';
+//    }
+
+    public void addTopic(Topic topic) {
+        this.getTopics().add(topic);
+    }
+
+    public void removeTopic(Topic topic) {
+        this.getTopics().remove(topic);
     }
 
 }

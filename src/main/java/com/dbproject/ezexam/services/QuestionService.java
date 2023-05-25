@@ -20,5 +20,4 @@ public class QuestionService {
     public Optional<Question> getQuestionById(Long id) {
         return questionRepo.findById(id);
     }
-
 }

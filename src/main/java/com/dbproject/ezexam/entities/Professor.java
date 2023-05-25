@@ -26,7 +26,7 @@ public class Professor {
 
 
     @OneToMany(mappedBy = "professor")
-    @JsonManagedReference
+    @JsonManagedReference("professorSubjects")
     private List<Subject> subjects;
 
     // other attributes

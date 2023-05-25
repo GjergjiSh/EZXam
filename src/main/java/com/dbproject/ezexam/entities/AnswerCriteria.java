@@ -14,7 +14,7 @@ public class AnswerCriteria {
 
     @ManyToOne
     @JoinColumn(name = "answer_id")
-    @JsonBackReference
+    @JsonBackReference("criteriaAnswer")
     private Answer answer;
 
     @Column(name = "name")

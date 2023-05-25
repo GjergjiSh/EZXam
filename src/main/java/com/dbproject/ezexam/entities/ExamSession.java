@@ -19,11 +19,11 @@ public class ExamSession {
 
     @ManyToOne
     @JoinColumn(name = "subject_id")
-    @JsonBackReference
+    @JsonBackReference("sessionSubject")
     private Subject subject;
 
     @OneToMany(mappedBy = "examSession")
-    @JsonManagedReference
+    @JsonManagedReference("sessionExams")
     private List<Exam> exams;
 
     @Column(name = "finished")

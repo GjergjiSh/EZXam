@@ -29,7 +29,7 @@ public class Student {
     private String lastname;
 
     @OneToMany(mappedBy = "student")
-    @JsonManagedReference
+    @JsonManagedReference("studentExams")
     private List<Exam> exams;
 
     // Constructors, getters, and setters

@@ -19,17 +19,17 @@ public class Exam {
 
     @ManyToOne
     @JoinColumn(name = "exam_session_id")
-    @JsonBackReference
+    @JsonBackReference("examSession")
     private ExamSession examSession;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    @JsonBackReference
+    @JsonBackReference("examStudent")
     @NotBlank
     private Student student;
 
     @OneToMany(mappedBy = "exam")
-    @JsonManagedReference
+    @JsonManagedReference("examAnswers")
     private List<Answer> answers;
 
     @Column(name = "duration")
