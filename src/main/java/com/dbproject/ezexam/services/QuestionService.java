@@ -20,4 +20,8 @@ public class QuestionService {
     public Optional<Question> getQuestionById(Long id) {
         return questionRepo.findById(id);
     }
+
+    public Question saveQuestion(Question question) {
+        return questionRepo.save(question);
+    }
 }
