@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 
 @Service
@@ -51,31 +50,4 @@ public class SubjectService {
         subject.addTopic(topic);
         return subjectRepo.save(subject);
     }
-
-
-//    public Subject saveSubject(Subject subject) {
-//        return subjectRepo.save(subject);
-//    }
-
-
-//    public Subject addTopic(Long subjectId, Topic topic) {
-//        Optional<Subject> subjectOptional = subjectRepo.findById(subjectId);
-//        if (subjectOptional.isPresent()) {
-//            Subject subject = subjectOptional.get();
-//            subject.addTopic(topic);
-//            return subjectRepo.save(subject);
-//        }
-//        return null;
-//    }
-//
-//    public Subject removeTopic(Long subjectId, Topic topic) {
-//        Optional<Subject> subjectOptional = subjectRepo.findById(subjectId);
-//        if (subjectOptional.isPresent()) {
-//            Subject subject = subjectOptional.get();
-//            subject.removeTopic(topic);
-//            return subjectRepo.save(subject);
-//        }
-//        return null;
-//    }
-
 }

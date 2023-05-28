@@ -2,7 +2,6 @@ package com.dbproject.ezexam.entities;
 
 import com.dbproject.ezexam.configuration.Role;
 import jakarta.persistence.*;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +22,6 @@ public class User implements UserDetails {
     private String password;
 
     private Role userRole;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -12,15 +12,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ExamService {
     private final ExamRepo examRepo;
-
     public List<Exam> getAllExams() {
         return examRepo.findAll();
     }
-
     public Optional<Exam> getExamById(Long id) {
         return examRepo.findById(id);
     }
-
     public Exam saveExam(Exam exam) {
         return examRepo.save(exam);
     }

@@ -22,7 +22,6 @@ public class Answer {
 
     @Column(name = "text")
     private String text;
-
     @Column(name = "description")
     private String description;
 
@@ -35,8 +34,6 @@ public class Answer {
     @OneToMany(mappedBy = "answer")
     @JsonManagedReference("answerCriterias")
     private List<AnswerCriteria> answerCriterias;
-
-    // other attributes and relationships
 
     @Override
     public String toString() {

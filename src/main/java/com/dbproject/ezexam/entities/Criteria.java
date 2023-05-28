@@ -17,8 +17,6 @@ public class Criteria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // other attributes
-
     @ManyToOne
     @JoinColumn(name = "question_id")
     @JsonBackReference("questionCriteria")
@@ -52,7 +50,4 @@ public class Criteria {
                 ", weight=" + weight +
                 '}';
     }
-
-
-    // getters and setters
 }

@@ -1,7 +1,8 @@
 package com.dbproject.ezexam.entities;
 
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -49,8 +50,6 @@ public class Question {
     public void removeCriteria(Criteria criteria) {
         criterias.remove(criteria);
     }
-
-    // other attributes
 
     @Override
     public String toString() {

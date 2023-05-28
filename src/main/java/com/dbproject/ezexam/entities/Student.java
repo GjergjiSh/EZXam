@@ -32,9 +32,6 @@ public class Student {
     @JsonManagedReference("studentExams")
     private List<Exam> exams;
 
-    // Constructors, getters, and setters
-
-    // Override toString() method
     @Override
     public String toString() {
         return "Student{" +

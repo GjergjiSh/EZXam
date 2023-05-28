@@ -29,8 +29,6 @@ public class AnswerCriteria {
     @Column(name = "met")
     private boolean met;
 
-    // other attributes and relationships
-
     @Override
     public String toString() {
         return "AnswerCriteria{" +

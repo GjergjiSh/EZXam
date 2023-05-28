@@ -1,6 +1,5 @@
 package com.dbproject.ezexam.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -19,17 +18,13 @@ public class Professor {
     @Column(name = "name")
     @NotBlank
     private String name;
-
     @Column(name = "lastname")
     @NotBlank
     private String lastname;
 
-
     @OneToMany(mappedBy = "professor")
     @JsonManagedReference("professorSubjects")
     private List<Subject> subjects;
-
-    // other attributes
 
     @Override
     public String toString() {
