@@ -15,4 +15,7 @@ public class CriteriaService {
     public List<Criteria> getAllCriteria() {
         return criteriaRepo.findAll();
     }
+
+    public Criteria saveCriteria(Criteria criteria) {return criteriaRepo.save(criteria);}
+
 }

@@ -4,10 +4,14 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "criterias")
+@NoArgsConstructor
 public class Criteria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +35,12 @@ public class Criteria {
     @Column(name = "weight")
     @NotBlank
     private double weight;
+
+    public Criteria(String name, String description, double weight) {
+        this.name = name;
+        this.description = description;
+        this.weight = weight;
+    }
 
     @Override
     public String toString() {

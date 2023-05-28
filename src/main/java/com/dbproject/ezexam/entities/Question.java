@@ -42,6 +42,14 @@ public class Question {
     @JsonManagedReference("questionCriterias")
     private List<Criteria> criterias;
 
+    public void addCriteria(Criteria criteria) {
+        criterias.add(criteria);
+    }
+
+    public void removeCriteria(Criteria criteria) {
+        criterias.remove(criteria);
+    }
+
     // other attributes
 
     @Override
