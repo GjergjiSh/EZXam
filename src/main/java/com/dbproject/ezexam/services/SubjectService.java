@@ -50,4 +50,10 @@ public class SubjectService {
         subject.addTopic(topic);
         return subjectRepo.save(subject);
     }
+
+    public Subject deleteTopicFromSubject(Subject subject, Topic topic) {
+        topic.setSubject(null);
+        subject.removeTopic(topic);
+        return subjectRepo.save(subject);
+    }
 }

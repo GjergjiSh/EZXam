@@ -70,6 +70,21 @@ public class SubjectController {
             return ResponseUtils.returnNotFound(e.getMessage());
         }
     }
+
+    @DeleteMapping("{id}/topics")
+    // TODO: Ideally done transactionally. All questions removed
+    public ResponseEntity<Object> removeTopicFromSubject(@PathVariable Long id,
+                                                         @RequestParam Long topicId) {
+        try {
+            Subject subject = subjectService.getSubjectById(id);
+            Topic topic = topicService.getTopicById(topicId);
+            subjectService.deleteTopicFromSubject(subject, topic);
+            topicService.deleteTopic(topic);
+            return ResponseUtils.returnSuccess(subject);
+        } catch (NoSuchElementException e) {
+            return ResponseUtils.returnNotFound(e.getMessage());
+        }
+    }
 }
 
 
