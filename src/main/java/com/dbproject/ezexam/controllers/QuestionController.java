@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.DescriptorKey;
 import java.util.NoSuchElementException;
 
 
@@ -57,6 +58,25 @@ public class QuestionController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(e.getMessage());
 
+        }
+    }
+
+    @DeleteMapping("/{questionId}/criteria/")
+    public ResponseEntity<Object> deleteCriteria(@PathVariable Long questionId, @RequestParam Long criteriaId) {
+        try {
+            Question question = questionService.getQuestionById(questionId);
+            Criteria criteria = criteriaService.getCriteriaById(criteriaId);
+            questionService.deleteCriteriaFromQuestion(question, criteria);
+            criteriaService.deleteCriteria(criteria);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(question);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(e.getMessage());
         }
     }
 }

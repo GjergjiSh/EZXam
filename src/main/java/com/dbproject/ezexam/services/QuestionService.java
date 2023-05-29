@@ -19,8 +19,8 @@ public class QuestionService {
     public Question getQuestionById(Long id) {
         return questionRepo.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
-                        "Question not found with id: " + id)
-                );
+                "Question not found with id: " + id)
+        );
     }
     public Question saveQuestion(Question question) {
         return questionRepo.save(question);
@@ -28,6 +28,11 @@ public class QuestionService {
     public Question addCriteriaToQuestion(Question question, Criteria criteria) {
         criteria.setQuestion(question);
         question.addCriteria(criteria);
+        return questionRepo.save(question);
+    }
+
+    public Question deleteCriteriaFromQuestion(Question question, Criteria criteria) {
+        question.removeCriteria(criteria);
         return questionRepo.save(question);
     }
 }
