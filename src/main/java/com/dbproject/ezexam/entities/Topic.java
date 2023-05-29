@@ -37,7 +37,7 @@ public class Topic {
     @JsonIgnore
     private Subject subject;
 
-    @OneToMany(mappedBy = "topic")
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("topicQuestions")
     @Getter
     @Setter

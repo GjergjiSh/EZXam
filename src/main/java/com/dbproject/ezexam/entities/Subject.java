@@ -20,7 +20,7 @@ public class Subject {
     @NotBlank
     private String name;
 
-    @OneToMany(mappedBy = "subject")
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("subjectTopics")
     private List<Topic> topics;
 

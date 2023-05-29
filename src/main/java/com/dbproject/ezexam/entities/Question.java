@@ -39,7 +39,7 @@ public class Question {
     @NotBlank
     private Topic topic;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("questionCriterias")
     private List<Criteria> criterias;
 
