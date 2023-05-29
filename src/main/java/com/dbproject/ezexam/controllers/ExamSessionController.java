@@ -1,17 +1,13 @@
 package com.dbproject.ezexam.controllers;
 
-import com.dbproject.ezexam.entities.ExamSession;
 import com.dbproject.ezexam.services.ExamSessionService;
+import com.dbproject.ezexam.utils.ResponseUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,18 +16,17 @@ public class ExamSessionController {
     private final ExamSessionService examSessionService;
 
     @GetMapping("/")
-    public ResponseEntity<List<ExamSession>> getExamSessions() {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(examSessionService.getAllExamSessions());
+    public ResponseEntity<Object> getExamSessions() {
+        return ResponseUtils.returnSuccess(
+                examSessionService.getAllExamSessions()
+        );
     }
 
     @GetMapping("/subject/{id}")
-    public ResponseEntity<List<ExamSession>> getSubjectSessions(@PathVariable Long id) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(examSessionService.getSubjectExamSessions(id));
+    // TODO add error handling
+    public ResponseEntity<Object> getSubjectSessions(@PathVariable Long id) {
+        return ResponseUtils.returnSuccess(
+                examSessionService.getSubjectExamSessions(id)
+        );
     }
 }

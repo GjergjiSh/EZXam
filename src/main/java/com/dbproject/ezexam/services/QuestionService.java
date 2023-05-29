@@ -35,4 +35,6 @@ public class QuestionService {
         question.removeCriteria(criteria);
         return questionRepo.save(question);
     }
+
+    public void deleteQuestion(Question question) {questionRepo.delete(question);}
 }

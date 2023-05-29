@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -15,11 +15,17 @@ public class StudentService {
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }
-    public Optional<Student> getStudentById(Long id) {
-        return studentRepository.findById(id);
+    public Student getStudentById(Long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(
+                "Student not found with id: " + id)
+        );
     }
-    public Optional<Student> getStudentByMatnr(String matnr) {
-        return studentRepository.findByMatnr(matnr);
+    public Student getStudentByMatnr(String matnr) {
+        return studentRepository.findByMatnr(matnr)
+                .orElseThrow(() -> new NoSuchElementException(
+                "Student not found with matnr: " + matnr)
+        );
     }
     public List<Student> getStudentsByFullName(String name, String lastname) {
         return studentRepository.findAllByNameAndLastname(name,lastname);

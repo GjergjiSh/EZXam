@@ -1,9 +1,8 @@
 package com.dbproject.ezexam.controllers;
 
 import com.dbproject.ezexam.services.ExamService;
+import com.dbproject.ezexam.utils.ResponseUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,9 +16,8 @@ public class ExamController {
 
     @GetMapping("/")
     public ResponseEntity<Object> getAllExams() {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(examService.getAllExams());
+        return ResponseUtils.returnSuccess(
+                examService.getAllExams()
+        );
     }
 }

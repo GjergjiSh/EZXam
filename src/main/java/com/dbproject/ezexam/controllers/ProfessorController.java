@@ -1,9 +1,8 @@
 package com.dbproject.ezexam.controllers;
 
 import com.dbproject.ezexam.services.ProfessorService;
+import com.dbproject.ezexam.utils.ResponseUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,17 +17,16 @@ public class ProfessorController {
 
     @GetMapping("/")
     public ResponseEntity<Object> getProfessors() {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(professorService.getAllProfessors());
+        return ResponseUtils.returnSuccess(
+                professorService.getAllProfessors()
+        );
     }
 
     @GetMapping("/{id}")
+    // TODO add error handling
     public ResponseEntity<Object> getProfessorById(@PathVariable Long id) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(professorService.getProfessorById(id));
+        return ResponseUtils.returnSuccess(
+                professorService.getProfessorById(id)
+        );
     }
 }

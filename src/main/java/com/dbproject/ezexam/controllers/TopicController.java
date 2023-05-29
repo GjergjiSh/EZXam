@@ -4,14 +4,12 @@ import com.dbproject.ezexam.entities.Question;
 import com.dbproject.ezexam.entities.Topic;
 import com.dbproject.ezexam.services.QuestionService;
 import com.dbproject.ezexam.services.TopicService;
+import com.dbproject.ezexam.utils.ResponseUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -22,11 +20,8 @@ public class TopicController {
     private final QuestionService questionService;
 
     @GetMapping
-    public ResponseEntity<List<Topic>> getTopics() {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(topicService.getAllTopics());
+    public ResponseEntity<Object> getTopics() {
+        return ResponseUtils.returnSuccess(topicService.getAllTopics());
     }
 
     @PutMapping("/{topicId}/questions")
@@ -38,15 +33,22 @@ public class TopicController {
             question.setCriterias(new ArrayList<>());
             topicService.addQuestionToTopic(topic, question);
             questionService.saveQuestion(question);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(topic);
+            return ResponseUtils.returnSuccess(topic);
         } catch (NoSuchElementException e) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(e.getMessage());
+            return ResponseUtils.returnNotFound(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{topicId}/questions/")
+    public ResponseEntity<Object> deleteQuestionFromTopic(@PathVariable Long topicId, @RequestParam Long questionId) {
+        try {
+            Topic topic = topicService.getTopicById(topicId);
+            Question question = questionService.getQuestionById(questionId);
+            topicService.removeQuestionFromTopic(topic, question);
+            questionService.deleteQuestion(question);
+            return ResponseUtils.returnSuccess(topic);
+        } catch (NoSuchElementException e) {
+            return ResponseUtils.returnNotFound(e.getMessage());
         }
     }
 }

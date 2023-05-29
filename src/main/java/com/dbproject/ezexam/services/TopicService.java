@@ -42,4 +42,9 @@ public class TopicService {
         topic.addQuestion(question);
         return topicRepo.save(topic);
     }
+
+    public Topic removeQuestionFromTopic(Topic topic, Question question) {
+        topic.removeQuestion(question);
+        return topicRepo.save(topic);
+    }
 }

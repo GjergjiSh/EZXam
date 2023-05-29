@@ -4,33 +4,35 @@ import com.dbproject.ezexam.entities.Criteria;
 import com.dbproject.ezexam.entities.Question;
 import com.dbproject.ezexam.services.CriteriaService;
 import com.dbproject.ezexam.services.QuestionService;
+import com.dbproject.ezexam.utils.ResponseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.DescriptorKey;
 import java.util.NoSuchElementException;
 
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/questions")
+// TODO: Autowiring the services - IntelliJ warns that this is not a good practice
 public class QuestionController {
     private final QuestionService questionService;
     private final CriteriaService criteriaService;
 
     @GetMapping("/")
     public ResponseEntity<Object> getQuestions() {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(questionService.getAllQuestions());
+        return ResponseUtils.returnSuccess(
+                questionService.getAllQuestions()
+        );
     }
 
     @PostMapping("/subject/{subjectId}")
-    public ResponseEntity<Object> addQuestion(@PathVariable Long subjectId, @RequestBody Question question) {
+    // TODO: This is dead code
+    public ResponseEntity<Object> addQuestion(@PathVariable Long subjectId,
+                                              @RequestBody Question question) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -38,6 +40,7 @@ public class QuestionController {
     }
 
     @PutMapping("/{questionId}/criteria/")
+    // TODO: Add ideally this is done in a single transaction
     public ResponseEntity<Object> addCriteria(@PathVariable Long questionId,
                                               @RequestParam String name,
                                               @RequestParam String description,
@@ -47,22 +50,18 @@ public class QuestionController {
             Criteria criteria = new Criteria(name, description, weight);
             questionService.addCriteriaToQuestion(question, criteria);
             criteriaService.saveCriteria(criteria);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(question);
-
+            return ResponseUtils.returnSuccess(question);
         } catch (NoSuchElementException e) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(e.getMessage());
-
+            return ResponseUtils.returnNotFound(
+                    e.getMessage()
+            );
         }
     }
 
     @DeleteMapping("/{questionId}/criteria/")
-    public ResponseEntity<Object> deleteCriteria(@PathVariable Long questionId, @RequestParam Long criteriaId) {
+    // TODO: Add ideally this is done in a single transaction
+    public ResponseEntity<Object> deleteCriteria(@PathVariable Long questionId,
+                                                 @RequestParam Long criteriaId) {
         try {
             Question question = questionService.getQuestionById(questionId);
             Criteria criteria = criteriaService.getCriteriaById(criteriaId);
