@@ -2,6 +2,7 @@ package com.dbproject.ezexam.controllers;
 
 import com.dbproject.ezexam.entities.Subject;
 import com.dbproject.ezexam.entities.Topic;
+import com.dbproject.ezexam.services.ExamSessionService;
 import com.dbproject.ezexam.services.SubjectService;
 import com.dbproject.ezexam.services.TopicService;
 import com.dbproject.ezexam.utils.ResponseUtils;
@@ -19,6 +20,7 @@ public class SubjectController {
     private final SubjectService subjectService;
 
     private final TopicService topicService;
+    private final ExamSessionService examSessionService;
 
     @GetMapping
     public ResponseEntity<Object> getSubjects() {
@@ -80,6 +82,17 @@ public class SubjectController {
             Topic topic = topicService.getTopicById(topicId);
             subjectService.deleteTopicFromSubject(subject, topic);
             topicService.deleteTopic(topic);
+            return ResponseUtils.returnSuccess(subject);
+        } catch (NoSuchElementException e) {
+            return ResponseUtils.returnNotFound(e.getMessage());
+        }
+    }
+
+    @PutMapping("{id}/sessions")
+    public ResponseEntity<Object> startSessionForSubject(@PathVariable Long id) {
+        try {
+            Subject subject = subjectService.getSubjectById(id);
+            examSessionService.startSessionForSubject(subject);
             return ResponseUtils.returnSuccess(subject);
         } catch (NoSuchElementException e) {
             return ResponseUtils.returnNotFound(e.getMessage());

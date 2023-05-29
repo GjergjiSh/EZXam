@@ -1,19 +1,25 @@
 package com.dbproject.ezexam.controllers;
 
+import com.dbproject.ezexam.entities.ExamSession;
+import com.dbproject.ezexam.entities.Subject;
+import com.dbproject.ezexam.services.ExamService;
 import com.dbproject.ezexam.services.ExamSessionService;
+import com.dbproject.ezexam.services.SubjectService;
 import com.dbproject.ezexam.utils.ResponseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/sessions/")
 public class ExamSessionController {
     private final ExamSessionService examSessionService;
+    private final ExamService examService;
 
     @GetMapping("/")
     public ResponseEntity<Object> getExamSessions() {
@@ -23,7 +29,6 @@ public class ExamSessionController {
     }
 
     @GetMapping("/subject/{id}")
-    // TODO add error handling
     public ResponseEntity<Object> getSubjectSessions(@PathVariable Long id) {
         return ResponseUtils.returnSuccess(
                 examSessionService.getSubjectExamSessions(id)

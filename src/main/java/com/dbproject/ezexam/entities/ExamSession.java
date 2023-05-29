@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @Getter
 @Table(name = "exam_sessions")
 @Entity
+@NoArgsConstructor
 public class ExamSession {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +34,11 @@ public class ExamSession {
     @Column(name = "date")
     @NotBlank
     private LocalDate date;
+
+    public ExamSession(Subject subject, List<Exam> exams, Boolean finished, LocalDate date) {
+        this.subject = subject;
+        this.exams = exams;
+        this.finished = finished;
+        this.date = date;
+    }
 }
