@@ -41,4 +41,12 @@ public class ExamSession {
         this.finished = finished;
         this.date = date;
     }
+
+    public void addExam(Exam exam) {
+        this.exams.add(exam);
+    }
+
+    public void removeExam(Exam exam) {
+        this.exams.remove(exam);
+    }
 }

@@ -30,4 +30,8 @@ public class StudentService {
     public List<Student> getStudentsByFullName(String name, String lastname) {
         return studentRepository.findAllByNameAndLastname(name,lastname);
     }
+
+    public void saveStudent(Student student) {
+        studentRepository.save(student);
+    }
 }

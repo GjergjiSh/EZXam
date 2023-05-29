@@ -41,4 +41,12 @@ public class Student {
                 ", lastname='" + lastname + '\'' +
                 '}';
     }
+
+    public void addExam(Exam exam) {
+        this.exams.add(exam);
+    }
+
+    public void removeExam(Exam exam) {
+        this.exams.remove(exam);
+    }
 }

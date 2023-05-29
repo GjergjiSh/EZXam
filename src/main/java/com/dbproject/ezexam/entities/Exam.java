@@ -5,12 +5,15 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Table(name = "exams")
 @Entity
+@NoArgsConstructor
 public class Exam {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +36,13 @@ public class Exam {
 
     @Column(name = "duration")
     private int duration;
+
+    public Exam(ExamSession examSession, Student student, int duration) {
+        this.examSession = examSession;
+        this.student = student;
+        this.answers = new ArrayList<>();
+        this.duration = duration;
+    }
 
     @Override
     public String toString() {

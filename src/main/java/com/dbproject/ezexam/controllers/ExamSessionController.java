@@ -1,9 +1,12 @@
 package com.dbproject.ezexam.controllers;
 
+import com.dbproject.ezexam.entities.Exam;
 import com.dbproject.ezexam.entities.ExamSession;
+import com.dbproject.ezexam.entities.Student;
 import com.dbproject.ezexam.entities.Subject;
 import com.dbproject.ezexam.services.ExamService;
 import com.dbproject.ezexam.services.ExamSessionService;
+import com.dbproject.ezexam.services.StudentService;
 import com.dbproject.ezexam.services.SubjectService;
 import com.dbproject.ezexam.utils.ResponseUtils;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ import java.util.NoSuchElementException;
 public class ExamSessionController {
     private final ExamSessionService examSessionService;
     private final ExamService examService;
+    private final StudentService studentService;
 
     @GetMapping("/")
     public ResponseEntity<Object> getExamSessions() {
@@ -33,5 +37,29 @@ public class ExamSessionController {
         return ResponseUtils.returnSuccess(
                 examSessionService.getSubjectExamSessions(id)
         );
+    }
+
+    @PutMapping("/{id}")
+    // TODO: Change the way the duration (and student?) are set
+    // TODO: The exam also needs to be added to the students exams list
+    // TODO: This is also better handled transactionally
+    public ResponseEntity<Object> startExamInSession(@PathVariable Long id,
+                                                     @RequestParam Long studentID,
+                                                     @RequestParam int duration) {
+        try {
+            // TODO: This is getting a a bit ugly, might be a better way to do this
+            //       i.e: Handle it in the service somehow
+            ExamSession examSession = examSessionService.getExamSessionById(id);
+            Student student = studentService.getStudentById(studentID);
+            Exam exam = new Exam(examSession, student, duration);
+            examSession.addExam(exam);
+            student.addExam(exam);
+            examSessionService.saveExamSession(examSession);
+            examService.saveExam(exam);
+            studentService.saveStudent(student);
+            return ResponseUtils.returnSuccess(exam);
+        } catch (NoSuchElementException e) {
+            return ResponseUtils.returnNotFound(e.getMessage());
+        }
     }
 }
