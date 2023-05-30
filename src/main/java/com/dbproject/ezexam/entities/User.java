@@ -1,28 +1,43 @@
 package com.dbproject.ezexam.entities;
 
-import com.dbproject.ezexam.configuration.Role;
+import com.dbproject.ezexam.config.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-
-@Entity
+@Getter
+@Setter
 @Table(name = "users")
+@Entity
 public class User implements UserDetails {
+    public User(String username, String password, Role userRole){
+        this.username = username;
+        this.password = password;
+        this.userRole = userRole;
+    }
+
+    public User(){}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @NotBlank
     private String username;
-
+    @NotBlank
     private String password;
-
+    @NotBlank
     private Role userRole;
+
+
+    @OneToOne(mappedBy = "user")
+    @NotBlank
+    private Professor professor;
 
 
     @Override

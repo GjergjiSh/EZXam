@@ -8,10 +8,16 @@ import lombok.Getter;
 
 import java.util.List;
 
-@Entity
 @Getter
 @Table(name = "professors")
+@Entity
 public class Professor {
+    public Professor(String name, String lastname, User user){
+        this.name = name;
+        this.lastname = lastname;
+        this.user = user;
+    }
+    public Professor(){}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,6 +29,12 @@ public class Professor {
     @Column(name = "lastname")
     @NotBlank
     private String lastname;
+
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    @NotBlank
+    private User user;
 
 
     @OneToMany(mappedBy = "professor")

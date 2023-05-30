@@ -8,6 +8,10 @@
 </head>
 
 <body>
+<div class="header">
+    <span class="username">Professor's name</span>
+    <button id="logoutButton" class="btn btn-secondary">Log out</button>
+</div>
 
 
 <div x-data="{subjects: []}" x-init="subjects = getSubjects()">
@@ -43,7 +47,25 @@
 
 <script type="text/javascript" src="/js/services/ApiService.js"></script>
 <script>
+    $(document).ready(function () {
+        $("#filter").on("keyup", function () {
+            const value = $(this).val().toLowerCase();
+            $("#subjects-table-body tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+    $(document).ready(function() {
+        $("#logoutButton").click(function() {
+            window.location.href = "/logout";
+            localStorage.removeItem("professorInfo");
+        });
+    });
+
+
     async function getSubjects() {
-        return await ApiService.getRequest('professors/1/subjects')
+        let subjects = await ApiService.getRequest('professors/1/subjects');
+        return await subjects.json();
     }
 </script>
