@@ -31,7 +31,8 @@
 <script>
     async function getSessions() {
         // TODO: Replace "1" with the professor ID. Blocked by #15.
-        return await ApiService.getRequest('professors/1/sessions/report')
+        let report = await ApiService.getRequest('professors/1/sessions/report')
+        return report.json()
     }
 
     document.addEventListener('alpine:init', () => {
