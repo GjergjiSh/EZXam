@@ -23,6 +23,11 @@ and then start the application.
 The environment configuration (besides for the url) for the docker-compose app part can be found in 
 the application.properties 
 
+### Dummy professors:
+"test1" "test1"
+and
+"test2" "test2"
+
 
 # Use cases
 1) Professor can register or login to the application. The login/registration is just made of name, username and password.
