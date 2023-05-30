@@ -40,9 +40,10 @@ INSERT INTO students (name, matnr, lastname) VALUES
                                                  ('Student 3', '345678', 'Lastname 3');
 
 -- Add dummy data to the exams table
-INSERT INTO exams (exam_session_id, student_id, duration) VALUES
-                                                              (1, 1, 120),
-                                                              (2, 2, 90);
+INSERT INTO exams (exam_session_id, student_id, duration, grade) VALUES
+                                                              (1, 1, 120, 1.0),
+                                                              (1, 3, 120, 1.7),
+                                                              (2, 2, 90, 2.7);
 
 -- Add dummy data to the answers table
 INSERT INTO answers (exam_id, text, description, points, achieved_points) VALUES

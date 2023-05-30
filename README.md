@@ -46,4 +46,5 @@ the application.properties
 For now, whenever we have an SQL statement, wrap it into a transactions
 1) Whenever the professor edits multiple criteria, if the weights don't add up to 100%, commit the edited criteria until the last
 change (not included)
-2)   
+2) Whenever the professor saves the exam, but 1 or more questions have not been answered, it will roll back
+3) When saving user -> save also professor

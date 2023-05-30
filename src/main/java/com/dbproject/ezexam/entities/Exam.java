@@ -1,7 +1,6 @@
 package com.dbproject.ezexam.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -34,6 +33,9 @@ public class Exam {
 
     @Column(name = "duration")
     private int duration;
+
+    @Column(name = "grade")
+    private double grade;
 
     // other attributes
 

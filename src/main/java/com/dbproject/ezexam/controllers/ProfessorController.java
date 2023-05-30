@@ -6,6 +6,8 @@ import com.dbproject.ezexam.dto.AddUser;
 import com.dbproject.ezexam.entities.Professor;
 import com.dbproject.ezexam.entities.User;
 import com.dbproject.ezexam.repositories.ProfessorRepo;
+import com.dbproject.ezexam.dtos.ExamSessionReportDTO;
+import com.dbproject.ezexam.dtos.SubjectDTO;
 import com.dbproject.ezexam.services.ProfessorService;
 import com.dbproject.ezexam.services.UserDetailsServiceImpl;
 import com.dbproject.ezexam.services.UserService;
@@ -16,6 +18,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,5 +55,15 @@ public class ProfessorController {
         professorService.saveProfessor(professor);
         return ResponseEntity
                 .ok().build();
+    }
+
+    @GetMapping("/{professorId}/subjects")
+    public ResponseEntity<List<SubjectDTO>> getAllSubjects(@PathVariable long professorId) {
+        return professorService.getProfessorSubjects(professorId);
+    }
+
+    @GetMapping("/{professorId}/sessions/report")
+    public ResponseEntity<List<ExamSessionReportDTO>> getProfessorExamSessionsReport(@PathVariable long professorId) {
+        return professorService.getProfessorExamSessionsReport(professorId);
     }
 }

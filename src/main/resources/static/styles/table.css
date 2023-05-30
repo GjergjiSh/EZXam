@@ -1,0 +1,13 @@
+.centred-table {
+    margin: auto;
+    width: 50% !important;
+}
+
+.row-buttons {
+    display: flex;
+    justify-content: end;
+}
+
+.row-buttons > button:first-child {
+    margin-right: 8px;
+}
