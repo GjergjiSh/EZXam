@@ -39,24 +39,25 @@ public class ExamSessionController {
         );
     }
 
-    @PutMapping("/{id}")
-    // TODO: Change the way the duration (and student?) are set
-    // TODO: The exam also needs to be added to the students exams list
+    @PutMapping("/{id}/exams/")
+    // TODO: Change the way the duration are set
     // TODO: This is also better handled transactionally
+    // TODO: Check if the student is already assigned to an exam in this session
+    // TODO - Question: Back vs Managed reference in student/exam? (see Student.java/Exam.java)
     public ResponseEntity<Object> startExamInSession(@PathVariable Long id,
-                                                     @RequestParam Long studentID,
+                                                     @RequestParam String studentMatnr,
                                                      @RequestParam int duration) {
         try {
-            // TODO: This is getting a a bit ugly, might be a better way to do this
-            //       i.e: Handle it in the service somehow
             ExamSession examSession = examSessionService.getExamSessionById(id);
-            Student student = studentService.getStudentById(studentID);
+            Student student = studentService.getStudentByMatnr(studentMatnr);
             Exam exam = new Exam(examSession, student, duration);
-            examSession.addExam(exam);
-            student.addExam(exam);
-            examSessionService.saveExamSession(examSession);
+
+            examSessionService.assignExam(examSession, exam);
+            studentService.assignExam(student, exam);
             examService.saveExam(exam);
-            studentService.saveStudent(student);
+
+            System.out.println(exam);
+
             return ResponseUtils.returnSuccess(exam);
         } catch (NoSuchElementException e) {
             return ResponseUtils.returnNotFound(e.getMessage());

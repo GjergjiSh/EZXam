@@ -1,5 +1,6 @@
 package com.dbproject.ezexam.services;
 
+import com.dbproject.ezexam.entities.Exam;
 import com.dbproject.ezexam.entities.Student;
 import com.dbproject.ezexam.repositories.StudentRepo;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,13 @@ public class StudentService {
         return studentRepository.findAllByNameAndLastname(name,lastname);
     }
 
-    public void saveStudent(Student student) {
-        studentRepository.save(student);
+    public Student saveStudent(Student student) {
+        return studentRepository.save(student);
+    }
+
+    public Student assignExam(Student student, Exam exam) {
+        student.addExam(exam);
+        exam.setStudent(student);
+        return saveStudent(student);
     }
 }

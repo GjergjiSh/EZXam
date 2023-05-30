@@ -1,5 +1,6 @@
 package com.dbproject.ezexam.services;
 
+import com.dbproject.ezexam.entities.Exam;
 import com.dbproject.ezexam.entities.ExamSession;
 import com.dbproject.ezexam.entities.Subject;
 import com.dbproject.ezexam.repositories.ExamSessionRepo;
@@ -36,7 +37,13 @@ public class ExamSessionService {
                 );
     }
 
-    public void saveExamSession(ExamSession examSession) {
-        examSessionRepo.save(examSession);
+    public ExamSession saveExamSession(ExamSession examSession) {
+        return examSessionRepo.save(examSession);
+    }
+
+    public ExamSession assignExam(ExamSession examSession, Exam exam) {
+        examSession.addExam(exam);
+        exam.setExamSession(examSession);
+        return saveExamSession(examSession);
     }
 }
