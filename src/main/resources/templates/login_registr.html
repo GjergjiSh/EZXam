@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head th:insert="layout.html :: config"></head>
 <head>
@@ -7,56 +7,62 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div x-data="{ activeForm: 'login' }">
-                <div class="d-flex mb-4">
-                    <button
-                            class="btn btn-primary me-2"
-                            :class="{ 'btn-success': activeForm === 'login' }"
-                            @click="activeForm = 'login'"
-                    >
-                        Login
-                    </button>
-                    <button
-                            class="btn btn-primary"
-                            :class="{ 'btn-success': activeForm === 'register' }"
-                            @click="activeForm = 'register'"
-                    >
-                        Register
-                    </button>
-                </div>
-
+            <div x-data="loginRegComponent()" x-init="init()">
                 <div x-show="activeForm === 'login'">
                     <h3>Login</h3>
-                    <form>
+                    <form @submit.prevent="submitLoginForm">
                         <div class="mb-3">
-                            <label for="loginEmail" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="loginEmail" placeholder="Enter email">
+                            <label for="loginName" class="form-label">Username</label>
+                            <input x-model="userLogin.username" type="text" class="form-control" id="loginName" placeholder="Enter username" minlength="5">
                         </div>
                         <div class="mb-3">
                             <label for="loginPassword" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="loginPassword" placeholder="Enter password">
+                            <input x-model="userLogin.password" type="password" class="form-control" id="loginPassword" placeholder="Enter password" minlength="5">
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary" :disabled="!isLoginFormValid">Submit</button>
                     </form>
+                    <div x-show="errorLogin" class="badge bg-danger mt-2" x-text="errorLogin"></div>
                 </div>
 
                 <div x-show="activeForm === 'register'">
                     <h3>Register</h3>
-                    <form>
+                    <form @submit.prevent="submitRegisterForm">
                         <div class="mb-3">
                             <label for="registerName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="registerName" placeholder="Enter name">
+                            <input x-model="userRegistration.name" type="text" class="form-control" id="registerName" placeholder="Enter name" minlength="5">
+                            <div x-show="userRegistration.name.length < 5" class="badge bg-danger mt-2">Name should be at least 5 characters long</div>
                         </div>
                         <div class="mb-3">
-                            <label for="registerEmail" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="registerEmail" placeholder="Enter email">
+                            <label for="registerLastName" class="form-label">Last name</label>
+                            <input x-model="userRegistration.lastName" type="text" class="form-control" id="registerLastName" placeholder="Enter last name" minlength="5">
+                            <div x-show="userRegistration.lastName.length < 5" class="badge bg-danger mt-2">Last name should be at least 5 characters long</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerUsername" class="form-label">Username</label>
+                            <input x-model="userRegistration.username" type="text" class="form-control" id="registerUsername" placeholder="Enter username" minlength="5">
+                            <div x-show="userRegistration.username.length < 5" class="badge bg-danger mt-2">Username should be at least 5 characters long</div>
                         </div>
                         <div class="mb-3">
                             <label for="registerPassword" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="registerPassword" placeholder="Enter password">
+                            <input x-model="userRegistration.password" type="password" class="form-control" id="registerPassword" placeholder="Enter password" minlength="5">
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <div class="mb-3">
+                            <label for="repeatPassword" class="form-label">Repeat Password</label>
+                            <input x-model="userRegistration.passwordRepeat" type="password" class="form-control" id="repeatPassword" placeholder="Repeat password" minlength="5">
+                            <div x-show="userRegistration.passwordRepeat.length < 5" class="badge bg-danger mt-2">Password should be at least 5 characters long</div>
+                            <div x-show="userRegistration.password !== userRegistration.passwordRepeat" class="badge bg-danger mt-2">Passwords do not match</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" :disabled="!isRegisterFormValid">Submit</button>
+                        <div x-show="errorRegister" class="badge bg-danger mt-2" x-text="errorRegister"></div>
                     </form>
+                </div>
+                <div class="mb-4 mt-4">
+                    <button class="btn btn-primary me-2" :class="{ 'btn-success': activeForm === 'login' }" @click="activeForm = 'login'">
+                        Login
+                    </button>
+                    <button class="btn btn-primary ml-10" :class="{ 'btn-success': activeForm === 'register' }" @click="activeForm = 'register'">
+                        Register
+                    </button>
                 </div>
             </div>
         </div>
@@ -64,3 +70,123 @@
 </div>
 </body>
 </html>
+<script type="text/javascript" src="/js/services/ApiService.js"></script>
+<script>
+    function loginRegComponent() {
+        return {
+            activeForm: 'login',
+            userRegistration: {
+                name: '',
+                lastName: '',
+                username: '',
+                password: '',
+                passwordRepeat: ''
+            },
+            userLogin: {
+                username: '',
+                password: ''
+            },
+            isLoginFormValid: false,
+            isRegisterFormValid: false,
+            errorLogin: '',
+            errorRegister: '',
+            async submitLoginForm() {
+                try {
+                    console.log(this.userLogin);
+                    const response = await ApiService.putRequest('users/authUser', this.userLogin);
+                    if (response.ok) {
+                        const professorInfo = await response.json();
+                        console.log(professorInfo);
+                        console.log("auth user success");
+
+                        localStorage.setItem('professorInfo', JSON.stringify(professorInfo));
+
+                        window.location.href = "/subjects-view";
+                    } else {
+                        console.log("auth user failed");
+                        this.errorLogin = 'Error while login. Check credentials.';
+                    }
+                } catch (error) {
+                    console.log(error);
+                    this.errorLogin = 'Error while login. Please try again later.';
+                }
+            },
+            async submitRegisterForm() {
+                try {
+                    console.log(this.userRegistration);
+                    const response = await ApiService.postRequest('professors/addProfessor', this.userRegistration);
+                    if (response.ok) {
+                        console.log("register user success");
+
+                        this.userLogin.username = this.userRegistration.username;
+                        this.userLogin.password = this.userRegistration.password;
+                        this.submitLoginForm();
+                    } else {
+                        console.log("register user failed");
+                        this.errorRegister = 'Error while register. Try again with different credentials';
+                    }
+                } catch (error) {
+                    console.log(error);
+                    this.errorRegister = 'Error while register. Please try again later.';
+                }
+            },
+            init() {
+                this.$watch('userLogin.username', () => {
+                    this.isLoginFormValid = this.userLogin.username.length >= 5 && this.userLogin.password.length >= 5;
+                });
+
+                this.$watch('userLogin.password', () => {
+                    this.isLoginFormValid = this.userLogin.username.length >= 5 && this.userLogin.password.length >= 5;
+                });
+
+                this.$watch('userRegistration.name', () => {
+                    this.isRegisterFormValid = this.userRegistration.name.length >= 5
+                    && this.userRegistration.lastName.length >= 5
+                    && this.userRegistration.username.length >= 5
+                    && this.userRegistration.password.length >= 5
+                    && this.userRegistration.passwordRepeat.length >= 5
+                    && this.userRegistration.passwordRepeat == this.userRegistration.password;
+                });
+
+                this.$watch('userRegistration.lastName', () => {
+                    this.isRegisterFormValid = this.userRegistration.name.length >= 5
+                    && this.userRegistration.lastName.length >= 5
+                    && this.userRegistration.username.length >= 5
+                    && this.userRegistration.password.length >= 5
+                    && this.userRegistration.passwordRepeat.length >= 5
+                    && this.userRegistration.passwordRepeat == this.userRegistration.password;
+                });
+
+                this.$watch('userRegistration.username', () => {
+                    this.isRegisterFormValid = this.userRegistration.name.length >= 5
+                    && this.userRegistration.lastName.length >= 5
+                    && this.userRegistration.username.length >= 5
+                    && this.userRegistration.password.length >= 5
+                    && this.userRegistration.passwordRepeat.length >= 5
+                    && this.userRegistration.passwordRepeat == this.userRegistration.password;
+                });
+
+                this.$watch('userRegistration.password', () => {
+                    this.isRegisterFormValid = this.userRegistration.name.length >= 5
+                    && this.userRegistration.lastName.length >= 5
+                    && this.userRegistration.username.length >= 5
+                    && this.userRegistration.password.length >= 5
+                    && this.userRegistration.passwordRepeat.length >= 5
+                    && this.userRegistration.passwordRepeat == this.userRegistration.password;
+                });
+
+                this.$watch('userRegistration.passwordRepeat', () => {
+                    this.isRegisterFormValid = this.userRegistration.name.length >= 5
+                    && this.userRegistration.lastName.length >= 5
+                    && this.userRegistration.username.length >= 5
+                    && this.userRegistration.password.length >= 5
+                    && this.userRegistration.passwordRepeat.length >= 5
+                    && this.userRegistration.passwordRepeat == this.userRegistration.password;
+                });
+            }
+        };
+    }
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('loginRegComponent', loginRegComponent);
+    });
+</script>

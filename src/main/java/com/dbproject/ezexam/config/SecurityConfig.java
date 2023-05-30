@@ -7,9 +7,12 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -40,17 +43,32 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests()
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers(
+                        "/exams/**",
+                        "/sessions/**",
+                        "/sessions/**",
+                        "/sessions/**",
+                        "/questions/**",
+                        "/students/**",
+                        "/subjects/**"
+                        )
+                .authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login-registration-view")
-                        .permitAll()
+                        .defaultSuccessUrl("/subjects-view", true)
                 )
-                .httpBasic().and()
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/login-registration-view")
+                        .deleteCookies("JSESSIONID")
+                )
+                .httpBasic().disable()
                 .csrf().disable();
 
         return http.build();
     }
+
 
 }

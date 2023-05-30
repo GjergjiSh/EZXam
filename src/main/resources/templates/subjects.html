@@ -5,7 +5,7 @@
 <body>
 <div class="header">
     <span class="username">Professor's name</span>
-    <button class="btn btn-secondary">Log out</button>
+    <button id="logoutButton" class="btn btn-secondary">Log out</button>
 </div>
 
 <div class="tabs">
@@ -56,9 +56,17 @@
         });
     });
 
+    $(document).ready(function() {
+        $("#logoutButton").click(function() {
+            window.location.href = "/logout";
+            localStorage.removeItem("professorInfo");
+        });
+    });
+
 
     async function getSubjects() {
-        return await ApiService.getRequest('subjects')
+        let subjects = await ApiService.getRequest('subjects');
+        return await subjects.json();
     }
 </script>
 
