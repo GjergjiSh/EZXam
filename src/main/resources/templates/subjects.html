@@ -9,35 +9,41 @@
 
 <body>
 
+<div x-data="viewData" x-init="subjects = getSubjects()">
 
-<div x-data="{subjects: []}" x-init="subjects = getSubjects()">
-    <div th:replace="~{fragments/header.html:: header(null)}"></div>
-    <div th:replace="~{fragments/tabs.html:: tabs}"></div>
-    <div th:replace="~{fragments/search-bar.html :: searchBar('subject-name')}"></div>
-    <table class="table centred-table" id="subjects-table">
-        <thead>
-        <tr>
-            <th scope="col">Subject</th>
-            <th scope="col"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <template x-for="subject in subjects">
-            <tr>
-                <td x-text="subject.name" id="subject-name"></td>
-                <td class="align-middle">
-                    <div class="row-buttons">
-                        <button class="edit-button btn btn-secondary">Edit</button>
-                        <button class="btn btn-primary">Start session</button>
-                    </div>
-                </td>
+    <div th:replace="~{fragments/header.html:: header(previousView)}"></div>
 
-            </tr>
-        </template>
-        </tbody>
-    </table>
+    <template x-if="currentView === 'subjects'">
+        <div>
+            <div th:replace="~{fragments/tabs.html:: tabs}"></div>
+            <div th:replace="~{fragments/search-bar.html :: searchBar('subject-name')}"></div>
+            <table class="table centred-table" id="subjects-table">
+                <thead>
+                <tr>
+                    <th scope="col">Subject</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <template x-for="subject in subjects">
+                    <tr>
+                        <td x-text="subject.name" id="subject-name"></td>
+                        <td class="align-middle">
+                            <div class="row-buttons">
+                                <button class="edit-button btn btn-secondary">Edit</button>
+                                <button class="btn btn-primary">Start session</button>
+                            </div>
+                        </td>
+
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+
 </div>
-
 </body>
 </html>
 
@@ -52,16 +58,20 @@
         });
     });
 
-    $(document).ready(function() {
-        $("#logoutButton").click(function() {
-            window.location.href = "/logout";
-            localStorage.removeItem("professorInfo");
-        });
-    });
-
-
     async function getSubjects() {
         let subjects = await ApiService.getRequest('professors/1/subjects');
         return await subjects.json();
     }
+
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('viewData', () => ({
+                currentView: 'subjects',
+                previousView: null,
+
+                changeView(view) {
+
+                },
+            })
+        )
+    })
 </script>
