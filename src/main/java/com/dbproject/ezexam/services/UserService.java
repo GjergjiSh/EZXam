@@ -1,13 +1,12 @@
 package com.dbproject.ezexam.services;
 
-import com.dbproject.ezexam.dto.AddUser;
+import com.dbproject.ezexam.dtos.AddUser;
 import com.dbproject.ezexam.entities.User;
 import com.dbproject.ezexam.repositories.UserRepo;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;

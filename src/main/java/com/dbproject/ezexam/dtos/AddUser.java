@@ -1,4 +1,4 @@
-package com.dbproject.ezexam.dto;
+package com.dbproject.ezexam.dtos;
 
 import com.dbproject.ezexam.config.Role;
 import io.swagger.annotations.ApiModelProperty;
