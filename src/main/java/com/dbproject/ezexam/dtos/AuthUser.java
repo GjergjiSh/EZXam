@@ -1,4 +1,4 @@
-package com.dbproject.ezexam.dto;
+package com.dbproject.ezexam.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
