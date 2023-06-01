@@ -10,7 +10,6 @@
 <body>
 
 <div x-data="viewData" x-init="subjects = getSubjects()">
-
     <div th:replace="~{fragments/header.html:: header(previousView)}"></div>
 
     <template x-if="currentView === 'subjects'">
@@ -31,7 +30,9 @@
                         <td class="align-middle">
                             <div class="row-buttons">
                                 <button class="edit-button btn btn-secondary">Edit</button>
-                                <button class="btn btn-primary">Start session</button>
+                                <button class="btn btn-primary" @click=changeView('session',subject)>
+                                    Start session
+                                </button>
                             </div>
                         </td>
 
@@ -42,24 +43,52 @@
         </div>
     </template>
 
+    <template x-if="currentView === 'session' && selectedSession">
+        <div x-init="students = getStudents()" th:fragment="session(sId)">
+            <div>
+                <div th:replace="~{fragments/search-bar.html :: searchBar('student-matnr')}"></div>
+                <table class="table centred-table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Matriculation number</th>
+                        <th scope="col">Lastname</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <template x-for="student in students">
+                        <tr>
+                            <td x-text="student.matnr" id="student-matnr"></td>
+                            <td x-text="student.lastname" id="student-last-name"></td>
+                            <td class="align-middle">
+                                <div class="row-buttons">
+                                    <button class="btn btn-primary"
+                                            @click="assignStudent(student.matnr)">Assign
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+
+    <template x-if="currentView === 'exam'">
+        <div th:insert="~{exam.html :: exam}"></div>
+    </template>
 
 </div>
+
 </body>
 </html>
 
 <script type="text/javascript" src="/js/services/ApiService.js"></script>
 <script>
-    $(document).ready(function () {
-        $("#filter").on("keyup", function () {
-            const value = $(this).val().toLowerCase();
-            $("#subjects-table-body tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-
     async function getSubjects() {
-        let subjects = await ApiService.getRequest('professors/1/subjects');
+        const professor = JSON.parse(localStorage.getItem('professorInfo'))
+        let subjects = await ApiService.getRequest(`professors/${professor.id}/subjects`);
         return await subjects.json();
     }
 
@@ -67,10 +96,41 @@
         Alpine.data('viewData', () => ({
                 currentView: 'subjects',
                 previousView: null,
+                selectedSession: null,
+                selectedSubject: null,
+                students: [],
 
-                changeView(view) {
-
+                async changeView(view, subject) {
+                    this.previousView = view === 'subjects' ? null : 'subjects';
+                    this.currentView = view
+                    if (view === 'subjects') {
+                        this.selectedSession = null
+                        this.subjects = getSubjects()
+                        localStorage.removeItem("examId")
+                        localStorage.removeItem("studentMatNr")
+                        localStorage.removeItem("subjectTopics")
+                    } else if (subject) {
+                        let request = await ApiService.putRequest(`subjects/${subject.id}/sessions`)
+                        let session = await request.json()
+                        this.selectedSession = session.id
+                        localStorage.setItem("subjectTopics", JSON.stringify(subject.topics))
+                    }
                 },
+
+                async getStudents() {
+                    let students = await ApiService.getRequest('students/')
+                    return await students.json()
+                },
+
+                async assignStudent(studentMatNr) {
+                    this.studentMatNr = studentMatNr
+                    // TODO:
+                    localStorage.setItem("examId", 1)
+                    localStorage.setItem("studentMatNr", studentMatNr)
+                    this.previousView = 'session'
+                    this.currentView = 'exam'
+                    // this.examId = await ApiService.putRequest(`sessions/${this.selectedSession}/exams?studentMatnr=${studentMatNr}&duration=60'`)
+                }
             })
         )
     })

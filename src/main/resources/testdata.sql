@@ -21,17 +21,24 @@ INSERT INTO exam_sessions (subject_id, finished, date) VALUES
 -- Add dummy data to the topics table
 INSERT INTO topics (name, subject_id) VALUES
 ('Algebra', 1),
-('Mechanics', 2);
+('Geometry', 1),
+                                          ('Mechanics', 2);
 
 -- Add dummy data to the questions table
 INSERT INTO questions (description, text, points, topic_id) VALUES
 ('Question 1', 'What is the square root of 16?', 5.0, 1),
-('Question 2', 'What is the acceleration due to gravity?', 10.0, 2);
+('Question 2', 'What is the acceleration due to gravity?', 10.0, 3),
+                                                                ('Question 3', 'Which number is equivalent to 3^(4)÷3^(2)?', 4.0, 1),
+                                                                ('Question 4', 'What is the area of a circle with a diameter of 16?', 3, 2);
 
 -- Add dummy data to the criterias table
 INSERT INTO criterias (question_id, name, description, weight) VALUES
 (1, 'Accuracy', 'How accurate is the answer?', 0.5),
-(2, 'Explanation', 'How well is the concept explained?', 0.7);
+(1, 'Explanation', 'How well is the concept explained?', 0.4),
+                                                                   (3, 'Explanation', 'How well is the concept explained?', 0.5),
+                                                                   (4, 'Explanation', 'How well is the concept explained?', 0.6),
+                                                                   (4, 'Accuracy', 'How accurate was him?', 0.4),
+                                                                   (2, 'Explanation', 'How well is the concept explained?', 0.7);
 
 -- Add dummy data to the students table
 INSERT INTO students (name, matnr, lastname) VALUES

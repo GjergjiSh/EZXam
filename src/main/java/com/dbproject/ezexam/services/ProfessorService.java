@@ -39,7 +39,7 @@ public class ProfessorService {
         Optional<Professor> professor = getProfessorById(professorId);
         return professor.map(value -> ResponseEntity.ok(value.getSubjects()
                 .stream()
-                .map(subject -> new SubjectDTO(subject.getId(), subject.getName()))
+                .map(subject -> new SubjectDTO(subject.getId(), subject.getName(), subject.getTopics()))
                 .collect(Collectors.toList()))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
