@@ -30,7 +30,7 @@
                         <td x-text="subject.name" id="subject-name"></td>
                         <td class="align-middle">
                             <div class="row-buttons">
-                                <button class="edit-button btn btn-secondary">Edit</button>
+                                <button @click="editSubject(subject.name)" class="edit-button btn btn-secondary">Edit</button>
                                 <button class="btn btn-primary">Start session</button>
                             </div>
                         </td>
@@ -71,6 +71,9 @@
                 changeView(view) {
 
                 },
+                editSubject(subjectName) {
+                    window.location.href = "/edit-subject-view?subjectName=" + subjectName;
+                }
             })
         )
     })

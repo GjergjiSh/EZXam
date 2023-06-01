@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" th:href="@{/styles/table.css}">
+    <link rel="stylesheet" th:href="@{/styles/centered-table-search-bar.css}">
+    <link rel="stylesheet" th:href="@{/styles/hide-cloack.css}">
+    <th:block th:replace="~{fragments/layout.html :: config}"></th:block>
+</head>
+
+<body>
+<div x-data="viewData" x-init="subject = await getSubjectInfo()">
+
+    <div th:replace="~{fragments/header.html:: header(previousView)}"></div>
+
+
+        <div>
+            <div th:replace="~{fragments/search-bar.html :: searchBar('topic-name')}"></div>
+            <table class="table centred-table" id="subjectTopics-table">
+                <thead>
+                <tr>
+                    <th x-text="subject.name" scope="col"></th>
+                    <th scope="col">
+                        <button type="button" class="btn btn-primary">Insert new topic</button>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                    <template x-for="topic in subject.topics">
+                        <tr>
+                            <td x-text="topic.name" id="topic-name"></td>
+                            <td class="align-middle">
+                                <div class="row-buttons">
+                                    <button @click="editTopic()" class="edit-button btn btn-secondary">Edit</button>
+                                    <button @click="deleteTopic()" class="btn btn-danger">Delete</button>
+                                </div>
+                            </td>
+
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+
+
+
+</div>
+</body>
+</html>
+
+<script type="text/javascript" src="/js/services/ApiService.js"></script>
+<script th:inline="javascript">
+
+
+
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('viewData', () => ({
+                previousView: '/subjects-view',
+                professor: JSON.parse(localStorage.getItem("professorInfo")),
+                subject: {},
+
+                changeView(view) {
+                   window.location.href = view;
+                },
+                async getSubjectInfo(){
+                    let subjectName = /*[[${subjectName}]]*/ '';
+                    let subject = await ApiService.getRequest("subjects/subject/" + subjectName);
+                    return await subject.json();
+                },
+                editTopic(){
+
+                },
+                deleteTopic(){
+
+                },
+            })
+        )
+    })
+</script>

@@ -9,6 +9,12 @@
         <button class="btn btn-outline-secondary" @click=changeView(previousView)>Back</button>
     <script>
         $(document).ready(function () {
+            var storedProfessorInfo = localStorage.getItem("professorInfo");
+            if (storedProfessorInfo) {
+                var professorInfo = JSON.parse(storedProfessorInfo);
+                $(".username").text(professorInfo.name + " " + professorInfo.lastName);
+            }
+
             $("#logoutButton").click(function () {
                 window.location.href = "/logout";
                 localStorage.removeItem("professorInfo");
