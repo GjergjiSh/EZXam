@@ -19,4 +19,11 @@ public class ViewsController {
         return "edit-subject";
     }
 
+    @RequestMapping("/edit-topic-view")
+    public String editTopicView(@RequestParam("subjectName") String subjectName, @RequestParam("topicName") String topicName, Model model) {
+        model.addAttribute("subjectName", subjectName);
+        model.addAttribute("topicName", topicName);
+        return "edit-topic";
+    }
+
 }

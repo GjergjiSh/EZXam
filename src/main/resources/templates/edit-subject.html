@@ -13,13 +13,14 @@
     <div th:replace="~{fragments/header.html:: header(previousView)}"></div>
 
 
-        <div>
-            <div th:replace="~{fragments/search-bar.html :: searchBar('topic-name')}"></div>
+        <div class="container-flex d-flex align-items-center flex-column">
+            <h1 x-text="subject.name"></h1>
+            <div class="mr-30 mt-10" th:replace="~{fragments/search-bar.html :: searchBar('topic-name')}"></div>
             <table class="table centred-table" id="subjectTopics-table">
                 <thead>
                 <tr>
-                    <th x-text="subject.name" scope="col"></th>
-                    <th scope="col">
+                    <th scope="col">Topic</th>
+                    <th class="d-flex justify-content-end" scope="col">
                         <button type="button" class="btn btn-primary">Insert new topic</button>
                     </th>
                 </tr>
@@ -30,7 +31,7 @@
                             <td x-text="topic.name" id="topic-name"></td>
                             <td class="align-middle">
                                 <div class="row-buttons">
-                                    <button @click="editTopic()" class="edit-button btn btn-secondary">Edit</button>
+                                    <button @click="editTopic(topic.name)" class="edit-button btn btn-secondary">Edit</button>
                                     <button @click="deleteTopic()" class="btn btn-danger">Delete</button>
                                 </div>
                             </td>
@@ -66,8 +67,8 @@
                     let subject = await ApiService.getRequest("subjects/subject/" + subjectName);
                     return await subject.json();
                 },
-                editTopic(){
-
+                editTopic(topicName){
+                    window.location.href = "/edit-topic-view?subjectName=" + this.subject.name + "&topicName=" + topicName;
                 },
                 deleteTopic(){
 
