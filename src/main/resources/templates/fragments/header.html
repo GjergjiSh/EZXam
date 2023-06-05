@@ -1,0 +1,21 @@
+<div class="header" th:fragment="header(previousView)">
+    <!--TODO: get professor name from user entity. Blocked by #15-->
+    <span>
+        <span class="username">Professor's name</span>
+        <button id="logoutButton" class="btn btn-secondary">Log out</button>
+    </span>
+    <div x-show="previousView !== null" x-cloak>
+<!--   implement the changeView function in the file which is calling this fragment. TODO: could this be done better? -->
+        <button class="btn btn-outline-secondary" @click=changeView(previousView)>Back</button>
+    <script>
+        $(document).ready(function () {
+            $("#logoutButton").click(function () {
+                window.location.href = "/logout";
+                localStorage.removeItem("professorInfo");
+            });
+        });
+    </script>
+    </div>
+</div>
+
+

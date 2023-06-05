@@ -1,47 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head th:insert="layout.html :: config"></head>
+<head>
+    <link rel="stylesheet" th:href="@{/styles/table.css}">
+    <link rel="stylesheet" th:href="@{/styles/centered-table-search-bar.css}">
+    <link rel="stylesheet" th:href="@{/styles/hide-cloack.css}">
+    <th:block th:replace="~{fragments/layout.html :: config}"></th:block>
+</head>
 
 <body>
-<div class="header">
-    <span class="username">Professor's name</span>
-    <button class="btn btn-secondary">Log out</button>
+
+<div x-data="viewData" x-init="subjects = getSubjects()">
+
+    <div th:replace="~{fragments/header.html:: header(previousView)}"></div>
+
+    <template x-if="currentView === 'subjects'">
+        <div>
+            <div th:replace="~{fragments/tabs.html:: tabs}"></div>
+            <div th:replace="~{fragments/search-bar.html :: searchBar('subject-name')}"></div>
+            <table class="table centred-table" id="subjects-table">
+                <thead>
+                <tr>
+                    <th scope="col">Subject</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <template x-for="subject in subjects">
+                    <tr>
+                        <td x-text="subject.name" id="subject-name"></td>
+                        <td class="align-middle">
+                            <div class="row-buttons">
+                                <button class="edit-button btn btn-secondary">Edit</button>
+                                <button class="btn btn-primary">Start session</button>
+                            </div>
+                        </td>
+
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+
 </div>
-
-<div class="tabs">
-    <button class="my-subject-tab btn btn-primary">My subjects</button>
-    <button class="btn btn-outline-primary">My sessions</button>
-</div>
-
-<div class="search-bar">
-    <input class="form-control" id="filter" type="text" placeholder="Search...">
-</div>
-
-<div x-data="{subjects: []}" x-init="subjects = getSubjects()">
-    <table class="table subjects-table">
-        <thead>
-        <tr>
-            <th scope="col"></th>
-            <th scope="col"></th>
-        </tr>
-        </thead>
-        <tbody id="subjects-table-body">
-        <template x-for="subject in subjects">
-            <tr>
-                <td x-text="subject.name">Mark</td>
-                <td class="align-middle">
-                    <div class="buttons">
-                        <button class="edit-button btn btn-secondary">Edit</button>
-                        <button class="btn btn-primary">Start session</button>
-                    </div>
-                </td>
-
-            </tr>
-        </template>
-        </tbody>
-    </table>
-</div>
-
 </body>
 </html>
 
@@ -56,51 +58,20 @@
         });
     });
 
-
     async function getSubjects() {
-        return await ApiService.getRequest('subjects')
+        let subjects = await ApiService.getRequest('professors/1/subjects');
+        return await subjects.json();
     }
+
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('viewData', () => ({
+                currentView: 'subjects',
+                previousView: null,
+
+                changeView(view) {
+
+                },
+            })
+        )
+    })
 </script>
-
-<style>
-    .header {
-        align-items: center;
-        display: flex;
-        justify-content: end;
-        margin: 8px 8px 4% 0;
-    }
-
-    .username {
-        margin-right: 8px;
-    }
-
-    .tabs {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 4%;
-    }
-
-    .search-bar {
-        width: 20%;
-        margin-left: 25%;
-    }
-
-    .my-subject-tab {
-        margin-right: 8px;
-    }
-
-    .subjects-table {
-        margin: auto;
-        width: 50%
-    }
-
-    .buttons {
-        display: flex;
-        justify-content: end;
-    }
-
-    .edit-button {
-        margin-right: 8px;
-    }
-
-</style>

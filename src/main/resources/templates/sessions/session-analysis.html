@@ -1,0 +1,31 @@
+<table class="table table-striped centred-table" th:fragment="analysis(sessionReport)">
+    <thead>
+    <tr>
+        <th scope="col"></th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Number of participants:</td>
+        <td x-text="sessionReport.numberOfExams"></td>
+    </tr>
+    <tr>
+        <td>Average grade:</td>
+        <td x-text="sessionReport.averageGrade"></td>
+    </tr>
+    <tr>
+        <td>Highest grade:</td>
+        <td x-text="sessionReport.highestGrade"></td>
+    </tr>
+    <tr>
+        <td>Pass:</td>
+        <td x-text="sessionReport.passes"></td>
+    </tr>
+    <tr>
+        <td>Fail:</td>
+        <td x-text="sessionReport.fails"></td>
+    </tr>
+    </tbody>
+
+</table>

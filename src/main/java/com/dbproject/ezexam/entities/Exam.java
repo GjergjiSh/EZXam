@@ -45,6 +45,10 @@ public class Exam {
         this.answers = new ArrayList<>();
         this.duration = duration;
     }
+    @Column(name = "grade")
+    private double grade;
+
+    // other attributes
 
     @Override
     public String toString() {

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" th:href="@{/styles/table.css}">
+    <link rel="stylesheet" th:href="@{/styles/centered-table-search-bar.css}">
+    <link rel="stylesheet" th:href="@{/styles/hide-cloack.css}">
+    <th:block th:replace="~{fragments/layout.html :: config}"></th:block>
+</head>
+<body>
+
+<div x-data="viewData" x-init="sessions = getSessions()">
+
+    <div th:replace="~{fragments/header.html:: header(previousView)}"></div>
+
+    <template x-if="currentView === 'sessions'">
+        <div th:replace="~{sessions/sessions-table.html:: sessions-table(sessions)}" x-cloak></div>
+    </template>
+
+    <template x-if="currentView === 'session-exams'">
+        <div th:replace="~{sessions/session-exams.html:: session-exams(sessionExams)}" x-cloak></div>
+    </template>
+
+    <template x-if="currentView === 'session-analysis'">
+        <div th:replace="~{sessions/session-analysis.html:: analysis(sessionReport)}"></div>
+    </template>
+</div>
+</body>
+</html>
+
+<script type="text/javascript" src="/js/services/ApiService.js"></script>
+<script>
+    async function getSessions() {
+        // TODO: Replace "1" with the professor ID. Blocked by #15.
+        let report = await ApiService.getRequest('professors/1/sessions/report')
+        return report.json()
+    }
+
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('viewData', () => ({
+                sessionReport: undefined,
+                currentView: 'sessions',
+                previousView: null,
+                sessions: [],
+                sessionExams: undefined,
+
+                changeView(view, session) {
+                    this.currentView = view
+                    if (view === 'session-exams') {
+                        this.sessionExams = session.exams
+                    } else if (view === 'session-analysis') {
+                        this.sessionReport = {
+                            numberOfExams: session.exams.length,
+                            highestGrade: session.highestGrade,
+                            averageGrade: session.averageGrade,
+                            fails: session.fails,
+                            passes: session.passes
+                        }
+                    }
+
+                    this.previousView = this.currentView === 'sessions' ? null : 'sessions'
+                },
+            })
+        )
+    })
+</script>

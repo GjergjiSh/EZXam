@@ -1,0 +1,13 @@
+<ul class="nav justify-content-center mb-2" th:fragment="tabs">
+    <li class="nav-item me-2 mb-4">
+        <a th:class="${activeTab == 'subjects'} ? 'btn btn-primary disabled' : 'btn btn-primary'"
+           th:href="@{/subjects-view}"
+           >
+            My subjects
+        </a>
+    </li>
+    <li class="nav-item">
+        <a th:class="${activeTab == 'sessions'} ? 'btn btn-primary disabled' : 'btn btn-primary'"
+           th:href="@{/sessions-view}">My sessions</a>
+    </li>
+</ul>
