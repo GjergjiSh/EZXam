@@ -1,7 +1,6 @@
 package com.dbproject.ezexam.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -21,29 +20,25 @@ public class Subject {
     @NotBlank
     private String name;
 
-    @OneToMany(mappedBy = "subject")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("subjectTopics")
     private List<Topic> topics;
 
     @ManyToOne
     @JoinColumn(name = "professor_id")
-    @JsonBackReference
+    @JsonBackReference("professorSubjects")
     private Professor professor;
 
     @OneToMany(mappedBy = "subject")
-    @JsonManagedReference
+    @JsonManagedReference("subjectSessions")
     private List<ExamSession> examSessions;
 
-    // other attributes
+    public void addTopic(Topic topic) {
+        this.getTopics().add(topic);
+    }
 
-    @Override
-    public String toString() {
-        return "Subject{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", topics=" + topics +
-                ", professor=" + professor +
-                '}';
+    public void removeTopic(Topic topic) {
+        this.getTopics().remove(topic);
     }
 
 }
