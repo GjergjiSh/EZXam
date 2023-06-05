@@ -20,10 +20,17 @@ public class ViewsController {
     }
 
     @RequestMapping("/edit-topic-view")
-    public String editTopicView(@RequestParam("subjectName") String subjectName, @RequestParam("topicName") String topicName, Model model) {
+    public String editTopicView(@RequestParam("subjectName") String subjectName, @RequestParam("topicId") String topicId, Model model) {
         model.addAttribute("subjectName", subjectName);
-        model.addAttribute("topicName", topicName);
+        model.addAttribute("topicId", topicId);
         return "edit-topic";
+    }
+
+    @RequestMapping("/insert-question-view")
+    public String editQuestionView(@RequestParam("subjectName") String subjectName, @RequestParam("topicId") String topicId, Model model) {
+        model.addAttribute("subjectName", subjectName);
+        model.addAttribute("topicId", topicId);
+        return "insert-question";
     }
 
 }

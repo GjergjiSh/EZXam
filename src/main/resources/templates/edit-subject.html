@@ -31,7 +31,7 @@
                             <td x-text="topic.name" id="topic-name"></td>
                             <td class="align-middle">
                                 <div class="row-buttons">
-                                    <button @click="editTopic(topic.name)" class="edit-button btn btn-secondary">Edit</button>
+                                    <button @click="editTopic(topic.id)" class="edit-button btn btn-secondary">Edit</button>
                                     <button @click="deleteTopic()" class="btn btn-danger">Delete</button>
                                 </div>
                             </td>
@@ -67,8 +67,8 @@
                     let subject = await ApiService.getRequest("subjects/subject/" + subjectName);
                     return await subject.json();
                 },
-                editTopic(topicName){
-                    window.location.href = "/edit-topic-view?subjectName=" + this.subject.name + "&topicName=" + topicName;
+                editTopic(topicId){
+                    window.location.href = "/edit-topic-view?subjectName=" + this.subject.name + "&topicId=" + topicId;
                 },
                 deleteTopic(){
 

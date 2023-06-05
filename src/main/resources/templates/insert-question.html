@@ -5,51 +5,37 @@
   <link rel="stylesheet" th:href="@{/styles/centered-table-search-bar.css}">
   <link rel="stylesheet" th:href="@{/styles/hide-cloack.css}">
   <th:block th:replace="~{fragments/layout.html :: config}"></th:block>
-  <style>
-    .container-flex {
-      display: flex;
-      align-items: center;
-    }
-  </style>
 </head>
-
 <body>
 <div x-data="viewData" x-init="await initialize()">
 
   <div th:replace="~{fragments/header.html:: header(previousView)}"></div>
-
   <div class="container-flex d-flex align-items-center flex-column">
-    <h1 x-text="currentTopic.name"></h1>
-    <div class="mr-30 mt-10" th:replace="~{fragments/search-bar.html :: searchBar('question-description')}"></div>
-
-    <table class="table centred-table" id="subjectTopicsQuestions-table">
-      <thead>
-      <tr>
-        <th scope="col">Question</th>
-        <th scope="col"></th>
-        <th scope="col" class="d-flex justify-content-end">
-          <button @click="insertQuestion()" type="button" class="btn btn-primary">Insert new question</button>
-        </th>
-      </tr>
-      </thead>
-        <tbody>
-        <template x-for="question in currentTopic.questions" :key="question.id">
-          <tr>
-            <td x-text="question.description" id="question-description"></td>
-            <td x-text="question.text" id="question-text"></td>
-            <td class="align-middle">
-              <div class="row-buttons">
-                <button @click="editQuestion()" class="edit-button btn btn-secondary">Edit</button>
-                <button @click="deleteQuestion()" class="btn btn-danger">Delete</button>
-              </div>
-            </td>
-          </tr>
-        </template>
-        </tbody>
-    </table>
+    <h1 x-text="labelAddQuestion"></h1>
+    <div class="w-50 d-flex flex-column">
+      <label for="questionText" class="w-100">Question text</label>
+      <textarea id="questionText" rows="3" class="w-100"></textarea>
+    </div>
+    <div class="w-50 d-flex flex-column mt-20">
+      <label for="questionDescription" class="w-100">Question description</label>
+      <textarea id="questionDescription" rows="3" class="w-100"></textarea>
+    </div>
+    <div class="container-flex d-flex align-items-start w-100">
+      <div class="w-25"></div>
+      <div class="w-50">
+        <h2>Criterias</h2>
+        <div class="d-flex w-90">
+          <button type="button" class="btn btn-info">New</button>
+          <button type="button" class="btn btn-danger">Delete</button>
+          <button type="button" class="btn btn-success">Save</button>
+        </div>
+      </div>
+    </div>
   </div>
+
 </div>
 </body>
+
 </html>
 
 <script type="text/javascript" src="/js/services/ApiService.js"></script>
@@ -60,10 +46,13 @@
         professor: JSON.parse(localStorage.getItem("professorInfo")),
         subject: {},
         currentTopic: {},
+        currentQuestion: {},
+        labelAddQuestion: "",
 
         async initialize() {
           this.getSubjectInfo().then(() => {
             this.setCurrentTopic(/*[[${topicId}]]*/ '');
+            this.labelAddQuestion = "Add question to " + this.currentTopic.name + " topic";
           });
         },
 
@@ -81,18 +70,6 @@
           let subject = await ApiService.getRequest("subjects/subject/" + subjectName);
           this.subject = await subject.json();
         },
-
-        editQuestion() {
-
-        },
-
-        deleteQuestion() {
-
-        },
-
-        insertQuestion() {
-          window.location.href = "/insert-question-view?subjectName=" + this.subject.name + "&topicId=" + this.currentTopic.id;
-        }
       }));
     });
   </script>
