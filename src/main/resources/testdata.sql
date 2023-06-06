@@ -44,7 +44,8 @@ INSERT INTO criterias (question_id, name, description, weight) VALUES
 INSERT INTO students (name, matnr, lastname) VALUES
 ('Student 1', '123456', 'Lastname 1'),
 ('Student 2', '234567', 'Lastname 2'),
-('Student 3', '345678', 'Lastname 3');
+('Student 3', '345678', 'Lastname 3'),
+('Student 4', '456789', 'Lastname 4');
 
 -- Add dummy data to the exams table
 INSERT INTO exams (exam_session_id, student_id, duration, grade) VALUES

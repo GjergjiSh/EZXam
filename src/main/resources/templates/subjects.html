@@ -44,7 +44,7 @@
     </template>
 
     <template x-if="currentView === 'session' && selectedSession">
-        <div x-init="students = getStudents()" th:fragment="session(sId)">
+        <div x-init="students = getStudentsWithoutSubject()" th:fragment="session(sId)">
             <div>
                 <div th:replace="~{fragments/search-bar.html :: searchBar('student-matnr')}"></div>
                 <table class="table centred-table">
@@ -97,13 +97,14 @@
                 currentView: 'subjects',
                 previousView: null,
                 selectedSession: null,
-                selectedSubject: null,
+                selectedSubjectId: null,
                 students: [],
 
                 async changeView(view, subject) {
                     this.previousView = view === 'subjects' ? null : 'subjects';
                     this.currentView = view
                     if (view === 'subjects') {
+                        this.selectedSubjectId = null
                         this.selectedSession = null
                         this.subjects = getSubjects()
                         localStorage.removeItem("examId")
@@ -112,13 +113,14 @@
                     } else if (subject) {
                         let request = await ApiService.putRequest(`subjects/${subject.id}/sessions`)
                         let session = await request.json()
+                        this.selectedSubjectId = subject.id
                         this.selectedSession = session.id
                         localStorage.setItem("subjectTopics", JSON.stringify(subject.topics))
                     }
                 },
 
-                async getStudents() {
-                    let students = await ApiService.getRequest('students/')
+                async getStudentsWithoutSubject() {
+                    let students = await ApiService.getRequest(`students/subject/${this.selectedSubjectId}/to-do`)
                     return await students.json()
                 },
 

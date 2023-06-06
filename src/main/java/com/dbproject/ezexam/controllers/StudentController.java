@@ -47,4 +47,11 @@ public class StudentController {
                 studentService.getStudentsByFullName(name, lastname)
         );
     }
+
+    @GetMapping("/subject/{id}/to-do")
+    public ResponseEntity<Object> getStudentsWithoutSubject(@PathVariable Long id) {
+        return ResponseUtils.returnSuccess(
+                studentService.getStudentsWithoutSubject(id)
+        );
+    }
 }
