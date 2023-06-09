@@ -21,7 +21,7 @@
                 <tr>
                     <th scope="col">Topic</th>
                     <th class="d-flex justify-content-end" scope="col">
-                        <button type="button" class="btn btn-primary">Insert new topic</button>
+                        <button type="button" class="btn btn-primary" @click="addNewTopic()">Insert new topic</button>
                     </th>
                 </tr>
                 </thead>
@@ -32,7 +32,7 @@
                             <td class="align-middle">
                                 <div class="row-buttons">
                                     <button @click="editTopic(topic.id)" class="edit-button btn btn-secondary">Edit</button>
-                                    <button @click="deleteTopic()" class="btn btn-danger">Delete</button>
+                                    <button @click="await deleteTopic(subject.id, topic.id)" class="btn btn-danger">Delete</button>
                                 </div>
                             </td>
 
@@ -64,15 +64,19 @@
                 },
                 async getSubjectInfo(){
                     let subjectName = /*[[${subjectName}]]*/ '';
-                    let subject = await ApiService.getRequest("subjects/subject/" + subjectName);
+                    let subject = await ApiService.getRequest(`subjects/${subjectName}`);
                     return await subject.json();
                 },
                 editTopic(topicId){
                     window.location.href = "/edit-topic-view?subjectName=" + this.subject.name + "&topicId=" + topicId;
                 },
-                deleteTopic(){
-
+                async deleteTopic(subjectId, topicId){
+                    await ApiService.deleteRequest(`${subjectId}/topics?topicId=${topicId}`);
+                    this.subject = this.getSubjectInfo()
                 },
+
+
+
             })
         )
     })

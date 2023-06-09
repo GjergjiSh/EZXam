@@ -41,4 +41,16 @@ class ApiService {
       throw new Error(e);
     }
   }
+
+    static async deleteRequest(path) {
+      try {
+        const response = await fetch(`http://localhost:8080/${path}`, {
+          method: "DELETE"
+        });
+        return response;
+      } catch (e) {
+        console.log(`Error while deleting: ${path}`);
+        throw new Error(e);
+      }
+    }
 }
