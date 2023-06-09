@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -15,4 +16,13 @@ public class CriteriaService {
     public List<Criteria> getAllCriteria() {
         return criteriaRepo.findAll();
     }
+
+    public Criteria saveCriteria(Criteria criteria) {return criteriaRepo.save(criteria);}
+
+    public void deleteCriteria(Criteria criteria) {criteriaRepo.delete(criteria);}
+
+    public Criteria getCriteriaById(Long criteriaId) {return criteriaRepo.findById(criteriaId)
+            .orElseThrow(() -> new NoSuchElementException(
+                    "Criteria not found with id: " + criteriaId)
+            );}
 }

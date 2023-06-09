@@ -1,6 +1,5 @@
 package com.dbproject.ezexam.repositories;
 
-import com.dbproject.ezexam.entities.Student;
 import com.dbproject.ezexam.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

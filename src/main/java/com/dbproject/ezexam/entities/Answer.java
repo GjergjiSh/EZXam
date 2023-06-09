@@ -17,12 +17,11 @@ public class Answer {
 
     @ManyToOne
     @JoinColumn(name = "exam_id")
-    @JsonBackReference
+    @JsonBackReference("answerExam")
     private Exam exam;
 
     @Column(name = "text")
     private String text;
-
     @Column(name = "description")
     private String description;
 
@@ -33,10 +32,8 @@ public class Answer {
     private double achievedPoints;
 
     @OneToMany(mappedBy = "answer")
-    @JsonManagedReference
+    @JsonManagedReference("answerCriterias")
     private List<AnswerCriteria> answerCriterias;
-
-    // other attributes and relationships
 
     @Override
     public String toString() {

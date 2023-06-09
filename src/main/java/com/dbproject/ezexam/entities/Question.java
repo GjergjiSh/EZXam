@@ -2,16 +2,17 @@ package com.dbproject.ezexam.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Getter
+@Setter
 @Table(name = "questions")
 @Entity
 public class Question {
@@ -34,15 +35,21 @@ public class Question {
 
     @ManyToOne
     @JoinColumn(name = "topic_id")
-    @JsonBackReference
+    @JsonBackReference("questionTopic")
     @NotBlank
     private Topic topic;
 
-    @OneToMany(mappedBy = "question")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("questionCriterias")
     private List<Criteria> criterias;
 
-    // other attributes
+    public void addCriteria(Criteria criteria) {
+        criterias.add(criteria);
+    }
+
+    public void removeCriteria(Criteria criteria) {
+        criterias.remove(criteria);
+    }
 
     @Override
     public String toString() {

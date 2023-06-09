@@ -29,12 +29,9 @@ public class Student {
     private String lastname;
 
     @OneToMany(mappedBy = "student")
-    @JsonManagedReference
+    @JsonManagedReference("studentExams")
     private List<Exam> exams;
 
-    // Constructors, getters, and setters
-
-    // Override toString() method
     @Override
     public String toString() {
         return "Student{" +
@@ -43,5 +40,13 @@ public class Student {
                 ", matnr='" + matnr + '\'' +
                 ", lastname='" + lastname + '\'' +
                 '}';
+    }
+
+    public void addExam(Exam exam) {
+        this.exams.add(exam);
+    }
+
+    public void removeExam(Exam exam) {
+        this.exams.remove(exam);
     }
 }

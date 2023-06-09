@@ -4,20 +4,22 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "criterias")
+@NoArgsConstructor
 public class Criteria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // other attributes
-
     @ManyToOne
     @JoinColumn(name = "question_id")
-    @JsonBackReference
+    @JsonBackReference("questionCriteria")
     private Question question;
 
     @Column(name = "name")
@@ -32,6 +34,12 @@ public class Criteria {
     @NotBlank
     private double weight;
 
+    public Criteria(String name, String description, double weight) {
+        this.name = name;
+        this.description = description;
+        this.weight = weight;
+    }
+
     @Override
     public String toString() {
         return "Criteria{" +
@@ -42,7 +50,4 @@ public class Criteria {
                 ", weight=" + weight +
                 '}';
     }
-
-
-    // getters and setters
 }
