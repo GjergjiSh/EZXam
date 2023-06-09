@@ -21,23 +21,33 @@
                 <tr>
                     <th scope="col">Topic</th>
                     <th class="d-flex justify-content-end" scope="col">
-                        <button type="button" class="btn btn-primary" @click="addNewTopic()">Insert new topic</button>
+                        <button type="button" class="btn btn-primary" @click="addNewTopic">Insert new topic</button>
                     </th>
                 </tr>
                 </thead>
                 <tbody>
-                    <template x-for="topic in subject.topics">
-                        <tr>
-                            <td x-text="topic.name" id="topic-name"></td>
-                            <td class="align-middle">
-                                <div class="row-buttons">
-                                    <button @click="editTopic(topic.id)" class="edit-button btn btn-secondary">Edit</button>
-                                    <button @click="await deleteTopic(subject.id, topic.id)" class="btn btn-danger">Delete</button>
-                                </div>
-                            </td>
-
-                        </tr>
-                    </template>
+                <template x-for="(topic, index) in subject.topics">
+                    <tr>
+                        <td x-text="topic.name" id="topic-name"></td>
+                        <td class="align-middle">
+                            <div class="row-buttons">
+                                <button @click="editTopic(topic.id)" class="edit-button btn btn-secondary">Edit</button>
+                                <button @click="await deleteTopic(subject.id, topic.id)" class="btn btn-danger">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                </template>
+                <tr x-show="showNewTopicRow">
+                    <td>
+                        <input type="text" x-model="newTopicName" placeholder="Enter topic name" class="form-control">
+                    </td>
+                    <td class="align-middle">
+                        <div class="row-buttons">
+                            <button @click="saveNewTopic(subject.id)" class="btn btn-success">Save</button>
+                            <button @click="cancelNewTopic" class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -53,31 +63,47 @@
 
 
 
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('viewData', () => ({
-                previousView: '/subjects-view',
-                professor: JSON.parse(localStorage.getItem("professorInfo")),
-                subject: {},
+document.addEventListener('alpine:init', () => {
+    Alpine.data('viewData', () => ({
+        previousView: '/subjects-view',
+        professor: JSON.parse(localStorage.getItem("professorInfo")),
+        subject: {},
 
-                changeView(view) {
-                   window.location.href = view;
-                },
-                async getSubjectInfo(){
-                    let subjectName = /*[[${subjectName}]]*/ '';
-                    let subject = await ApiService.getRequest(`subjects/${subjectName}`);
-                    return await subject.json();
-                },
-                editTopic(topicId){
-                    window.location.href = "/edit-topic-view?subjectName=" + this.subject.name + "&topicId=" + topicId;
-                },
-                async deleteTopic(subjectId, topicId){
-                    await ApiService.deleteRequest(`${subjectId}/topics?topicId=${topicId}`);
-                    this.subject = this.getSubjectInfo()
-                },
+        changeView(view) {
+            window.location.href = view;
+        },
+        async getSubjectInfo() {
+            let subjectName = /*[[${subjectName}]]*/ '';
+            let subject = await ApiService.getRequest(`subjects/${subjectName}`);
+            return await subject.json();
+        },
+        editTopic(topicId) {
+            window.location.href = "/edit-topic-view?subjectName=" + this.subject.name + "&topicId=" + topicId;
+        },
+        async deleteTopic(subjectId, topicId) {
+            await ApiService.deleteRequest(`subjects/${subjectId}/topics?topicId=${topicId}`);
+            this.subject = await this.getSubjectInfo();
+        },
 
+        showNewTopicRow: false,
+        newTopicName: '',
 
+        addNewTopic() {
+            this.showNewTopicRow = true;
+        },
 
-            })
-        )
-    })
+        cancelNewTopic() {
+            this.showNewTopicRow = false;
+            this.newTopicName = '';
+        },
+
+        async saveNewTopic(subjectId) {
+            if (this.newTopicName.trim() === '') {
+                return;
+            }
+            await ApiService.putRequest(`subjects/${subjectId}/topics/?topicName=${this.newTopicName}`)
+            this.subject = await this.getSubjectInfo();
+        }
+    }));
+});
 </script>

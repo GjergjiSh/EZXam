@@ -40,7 +40,7 @@
             <td class="align-middle">
               <div class="row-buttons">
                 <button @click="editQuestion()" class="edit-button btn btn-secondary">Edit</button>
-                <button @click="deleteQuestion()" class="btn btn-danger">Delete</button>
+                <button @click="await deleteQuestion(question.id)" class="btn btn-danger">Delete</button>
               </div>
             </td>
           </tr>
@@ -54,45 +54,48 @@
 
 <script type="text/javascript" src="/js/services/ApiService.js"></script>
 <script th:inline="javascript">
-    document.addEventListener('alpine:init', () => {
-      Alpine.data('viewData', () => ({
-        previousView: "/edit-subject-view?subjectName=" + /*[[${subjectName}]]*/ '',
-        professor: JSON.parse(localStorage.getItem("professorInfo")),
-        subject: {},
-        currentTopic: {},
+   document.addEventListener('alpine:init', () => {
+  Alpine.data('viewData', () => ({
+    previousView: "/edit-subject-view?subjectName=" + /*[[${subjectName}]]*/ '',
+    professor: JSON.parse(localStorage.getItem("professorInfo")),
+    subject: {},
+    currentTopic: {},
 
-        async initialize() {
-          this.getSubjectInfo().then(() => {
-            this.setCurrentTopic(/*[[${topicId}]]*/ '');
-          });
-        },
+    async initialize() {
+      this.getSubjectInfo().then(() => {
+        this.setCurrentTopic(/*[[${topicId}]]*/ '');
+      });
+    },
 
-        setCurrentTopic(topicId) {
-          console.log("Current topic id: " + topicId);
-          this.currentTopic = this.subject.topics.find(topic => topic.id == topicId);
-        },
+    setCurrentTopic(topicId) {
+      console.log("Current topic id: " + topicId);
+      this.currentTopic = this.subject.topics.find(topic => topic.id == topicId);
+    },
 
-        changeView(view) {
-          window.location.href = view;
-        },
+    changeView(view) {
+      window.location.href = view;
+    },
 
-        async getSubjectInfo() {
-          let subjectName = /*[[${subjectName}]]*/ '';
-          let subject = await ApiService.getRequest("subjects/subject/" + subjectName);
-          this.subject = await subject.json();
-        },
+    async getSubjectInfo() {
+      let subjectName = /*[[${subjectName}]]*/ '';
+      let subject = await ApiService.getRequest(`subjects/${subjectName}`);
+      this.subject = await subject.json();
+    },
 
-        editQuestion() {
+    editQuestion() {
 
-        },
+    },
 
-        deleteQuestion() {
+    async deleteQuestion(questionId) {
+      await ApiService.deleteRequest(`topics/${this.currentTopic.id}/questions/?questionId=${questionId}`);
+      this.getSubjectInfo().then(() => {
+        this.setCurrentTopic(/*[[${topicId}]]*/ '');
+      });
+    },
 
-        },
-
-        insertQuestion() {
-          window.location.href = "/insert-question-view?subjectName=" + this.subject.name + "&topicId=" + this.currentTopic.id;
-        }
-      }));
-    });
+    insertQuestion() {
+      window.location.href = "/insert-question-view?subjectName=" + this.subject.name + "&topicId=" + this.currentTopic.id;
+    }
+  }));
+});
   </script>
