@@ -1,6 +1,12 @@
-<div x-data="{topicQuestions: [], grade: 0}"
-     x-init="topicQuestions=getQuestions(); $watch('topicQuestions', value => grade = updateGrade(value))"
+<div x-data="{topicQuestions: [], grade: 0, duration: 0}"
+     x-init="topicQuestions=getQuestions(); duration=localStorage.getItem('examDuration'); $watch('topicQuestions', value => grade = updateGrade(value));
+     durationInterval = setInterval(() => {
+        duration -= 1
+        if (duration < 1) {
+        clearInterval(durationInterval)}
+      }, 1000)"
      th:fragment="exam">
+    <div x-text="getDuration(duration)" style="margin-left: 70%"></div>
     <table class="table centred-table table-borderless">
         <thead>
         <tr>
@@ -37,7 +43,7 @@
                                     <div class="form-group">
                                         <label class="fw-bold" for="professorsNotes">Notes</label>
                                         <textarea class="form-control" id="professorsNotes" rows="3"
-                                                  x-model="topicQuestions.professorComment"></textarea>
+                                                  x-model="question.professorComment"></textarea>
                                     </div>
 
                                     <div class="card-footer text-end"></div>
@@ -59,7 +65,8 @@
         <input class="" type="text" placeholder="Grade..." x-model="grade">
 
         <div class="d-flex justify-content-center">
-            <button type="button" class="btn btn-primary " x-on:click="finishExam(topicQuestions, grade)">Submit
+            <button type="button" class="btn btn-primary " x-on:click="finishExam(topicQuestions, grade, duration).then(r => $dispatch('exam-finished'))">
+                Submit
             </button>
         </div>
     </div>
@@ -122,10 +129,37 @@
             return 5.0
         }
 
-        function finishExam(topicQuestions, grade) {
+        function getDuration(durationInSeconds) {
+            let minutes = Math.floor(durationInSeconds / 60)
+            let hours = Math.floor(minutes / 60)
+            durationInSeconds = durationInSeconds % 60
+            minutes = minutes % 60
+            let durationToDisplay = ''
+            if (hours > 0) {
+                durationToDisplay = durationToDisplay.concat((getFormattedDuration(hours)) + ":")
+            } else {
+                durationToDisplay = durationToDisplay.concat(("00:"))
+            }
+            if (minutes > 0) {
+                durationToDisplay = durationToDisplay.concat(getFormattedDuration(minutes) + ":")
+            } else {
+                durationToDisplay = durationToDisplay.concat('00:')
+            }
+            durationToDisplay = durationToDisplay.concat((getFormattedDuration(durationInSeconds)))
+
+            return durationToDisplay
+        }
+
+        function getFormattedDuration(duration) {
+            return ("00" + duration).slice(-2);
+        }
+
+        async function finishExam(topicQuestions, grade, duration) {
             const finishedExam = {
                 examId: localStorage.getItem("examId"),
-                studentMatNr: localStorage.getItem("studentMatNr"),
+                examSessionId: localStorage.getItem("examSessionId"),
+                studentMatriculationNumber: localStorage.getItem("studentMatriculationNumber"),
+                duration: Math.floor(duration / 60),
                 grade: grade,
                 answers: [],
             }
@@ -135,16 +169,30 @@
                 for (let j = 0; j < questions.length; j++) {
                     const question = questions[j]
                     const metCriterias = questions[j].criterias.filter(criteria => criteria.met)
+                    const points = question.points
+                    let reachedWeight = 0
+                    metCriterias.forEach(metCriteria => reachedWeight += metCriteria.weight)
 
                     finishedExam.answers.push({
-                        questionId: question.id,
-                        metCriteria: metCriterias.map(metCriteria => metCriteria.id),
-                        professorComment: question.professorComment,
+                        question: question.text,
+                        text: question.professorComment,
+                        points: points,
+                        description: question.description,
+                        achievedPoints: points * reachedWeight,
+                        answerCriterias: metCriterias.map(metCriteria => ({
+                            name: metCriteria.name,
+                            description: metCriteria.description,
+                            weight: metCriteria.weight,
+                            met: true,
+                        })),
+
                     })
+
                 }
             }
 
-            console.log(finishedExam)
+            const examRequest = await ApiService.putRequest('exams/update', finishedExam)
+            return await examRequest.json()
         }
     </script>
 </div>

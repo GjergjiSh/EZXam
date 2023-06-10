@@ -22,15 +22,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProfessorService {
     private final ProfessorRepo professorRepository;
+
     public Professor saveProfessor(Professor professor) {
         return professorRepository.save(professor);
     }
+
     public Optional<Professor> getProfessorById(Long id) {
         return professorRepository.findById(id);
     }
+
     public List<Professor> getAllProfessors() {
         return professorRepository.findAll();
     }
+
     public void deleteProfessor(Long id) {
         professorRepository.deleteById(id);
     }
@@ -39,7 +43,7 @@ public class ProfessorService {
         Optional<Professor> professor = getProfessorById(professorId);
         return professor.map(value -> ResponseEntity.ok(value.getSubjects()
                 .stream()
-                .map(subject -> new SubjectDTO(subject.getId(), subject.getName(), subject.getTopics()))
+                .map(subject -> new SubjectDTO(subject.getId(), subject.getName(), subject.getExamSessions().stream().filter(examSession -> !examSession.getFinished()).findFirst(), subject.getTopics()))
                 .collect(Collectors.toList()))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

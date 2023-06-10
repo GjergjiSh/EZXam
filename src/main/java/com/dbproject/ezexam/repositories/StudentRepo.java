@@ -17,10 +17,10 @@ public interface StudentRepo extends JpaRepository<Student, Long> {
     @Query(value = """
             select * from students
             where students.id not in (
-                select exams.id from exams
+                select exams.student_id from exams
                                 join exam_sessions on exam_sessions.id = exams.exam_session_id
-                                join subjects on subjects.id = exam_sessions.id
-                                where subject_id = ?1
+                                join subjects on subjects.id = exam_sessions.subject_id
+                                where subject_id = ?1 and exams.grade != 0
                 )
             """,
             nativeQuery = true)

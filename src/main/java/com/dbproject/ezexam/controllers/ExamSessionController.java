@@ -3,19 +3,18 @@ package com.dbproject.ezexam.controllers;
 import com.dbproject.ezexam.entities.Exam;
 import com.dbproject.ezexam.entities.ExamSession;
 import com.dbproject.ezexam.entities.Student;
-import com.dbproject.ezexam.entities.Subject;
 import com.dbproject.ezexam.services.ExamService;
 import com.dbproject.ezexam.services.ExamSessionService;
 import com.dbproject.ezexam.services.StudentService;
-import com.dbproject.ezexam.services.SubjectService;
 import com.dbproject.ezexam.utils.ResponseUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +31,13 @@ public class ExamSessionController {
         );
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getSession(@PathVariable Long id) {
+        return ResponseUtils.returnSuccess(
+                examSessionService.getExamSession(id)
+        );
+    }
+
     @GetMapping("/subject/{id}")
     public ResponseEntity<Object> getSubjectSessions(@PathVariable Long id) {
         return ResponseUtils.returnSuccess(
@@ -39,6 +45,14 @@ public class ExamSessionController {
         );
     }
 
+    @PutMapping("/finish/{id}")
+    public ResponseEntity<Object> finishSession(@PathVariable Long id) {
+        return ResponseUtils.returnSuccess(
+                examSessionService.finishExamSession(id)
+        );
+    }
+
+    @Transactional
     @PutMapping("/{id}/exams/")
     // TODO: Change the way the duration are set
     // TODO: This is also better handled transactionally
@@ -50,15 +64,15 @@ public class ExamSessionController {
         try {
             ExamSession examSession = examSessionService.getExamSessionById(id);
             Student student = studentService.getStudentByMatnr(studentMatnr);
+            Optional<Exam> alreadyExistingExam = student.getExams().stream().filter(studentExam -> Objects.equals(studentExam.getExamSession().getId(), id)).findFirst();
+            alreadyExistingExam.ifPresent(value -> examService.deleteExam(value.getId()));
+
             Exam exam = new Exam(examSession, student, duration);
 
             examSessionService.assignExam(examSession, exam);
             studentService.assignExam(student, exam);
-            examService.saveExam(exam);
-
-            System.out.println(exam);
-
-            return ResponseUtils.returnSuccess(exam);
+            Exam savedExam = examService.saveExam(exam);
+            return ResponseUtils.returnSuccess(savedExam);
         } catch (NoSuchElementException e) {
             return ResponseUtils.returnNotFound(e.getMessage());
         }
