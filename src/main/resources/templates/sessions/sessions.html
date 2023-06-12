@@ -49,7 +49,7 @@
                         this.sessionExams = session.exams
                     } else if (view === 'session-analysis') {
                         this.sessionReport = {
-                            numberOfExams: session.exams.length,
+                            numberOfExams: session.fails + session.passes,
                             highestGrade: session.highestGrade,
                             averageGrade: session.averageGrade,
                             fails: session.fails,
