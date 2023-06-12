@@ -81,6 +81,53 @@ CREATE TRIGGER deleteSessionUnfinishedExams
       and exams.exam_session_id = NEW.id
       and exams.grade = 0;
 
+
+drop trigger if exists createSessionAnalysis;
+create trigger createSessionAnalysis
+    AFTER INSERT
+    on exam_sessions
+    for each row
+    insert into exam_session_analysis(exam_session_id, average_grade, fail, highest_grade, number_of_participants, pass)
+    values (NEW.id, 0, 0.0, 0.0, 0, 0);
+
+
+drop trigger if exists updateAnalysis;
+CREATE TRIGGER updateAnalysis
+       AFTER UPDATE
+       ON exams
+       FOR EACH ROW
+       UPDATE exam_session_analysis
+       set exam_session_analysis.exam_session_id=NEW.exam_session_id,
+           exam_session_analysis.average_grade=(select avg(grade)
+                                                from exams
+                                                WHERE exams.exam_session_id = NEW.exam_session_id
+                                                  and exams.grade >= 1.0),
+           exam_session_analysis.fail=
+                  (SELECT COUNT(exams.student_id)
+                   FROM exams
+                               join exam_sessions on exam_sessions.id = exams.exam_session_id
+                   WHERE exams.exam_session_id = NEW.exam_session_id
+                     and exams.grade > 4.0),
+           exam_session_analysis.highest_grade=
+                  (select MIN(grade)
+                   from exams
+                   WHERE exams.exam_session_id = NEW.exam_session_id
+                     and exams.grade >= 1.0),
+           exam_session_analysis.number_of_participants=
+                  (SELECT COUNT(exams.student_id)
+                   FROM exams
+                               join exam_sessions on exam_sessions.id = exams.exam_session_id
+                   WHERE exams.exam_session_id = NEW.exam_session_id
+                     and grade >= 1.0),
+           exam_session_analysis.pass=
+                  (SELECT COUNT(exams.student_id)
+                   FROM exams
+                               join exam_sessions on exam_sessions.id = exams.exam_session_id
+                   WHERE exams.exam_session_id = NEW.exam_session_id
+                     and exams.grade < 4.0
+                     and exams.grade >= 1.0)
+       where exam_session_analysis.exam_session_id = NEW.exam_session_id;
+
 -- When a session is over, adapt grades to average
 -- CREATE TRIGGER adaptGradesToAverage
 --     AFTER UPDATE
