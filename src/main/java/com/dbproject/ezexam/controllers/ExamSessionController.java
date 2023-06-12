@@ -52,7 +52,6 @@ public class ExamSessionController {
         );
     }
 
-    @Transactional
     @PutMapping("/{id}/exams/")
     // TODO: Change the way the duration are set
     // TODO: This is also better handled transactionally
@@ -65,9 +64,8 @@ public class ExamSessionController {
             ExamSession examSession = examSessionService.getExamSessionById(id);
             Student student = studentService.getStudentByMatnr(studentMatnr);
             Optional<Exam> alreadyExistingExam = student.getExams().stream().filter(studentExam -> Objects.equals(studentExam.getExamSession().getId(), id)).findFirst();
-            alreadyExistingExam.ifPresent(value -> examService.deleteExam(value.getId()));
 
-            Exam exam = new Exam(examSession, student, duration);
+            Exam exam = alreadyExistingExam.orElseGet(() -> new Exam(examSession, student, duration));
 
             examSessionService.assignExam(examSession, exam);
             studentService.assignExam(student, exam);

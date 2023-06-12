@@ -4,12 +4,15 @@ import com.dbproject.ezexam.dtos.UpdateExamDTO;
 import com.dbproject.ezexam.entities.Answer;
 import com.dbproject.ezexam.entities.AnswerCriteria;
 import com.dbproject.ezexam.entities.Exam;
+import com.dbproject.ezexam.entities.Student;
 import com.dbproject.ezexam.repositories.ExamRepo;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,8 +20,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ExamService {
     private final ExamRepo examRepo;
-    private final ExamSessionService examSessionService;
-    private final StudentService studentService;
 
     public List<Exam> getAllExams() {
         return examRepo.findAll();
@@ -28,6 +29,7 @@ public class ExamService {
         return examRepo.findById(id);
     }
 
+    @Transactional(rollbackOn = Exception.class)
     public Exam saveExam(Exam exam) {
         return examRepo.save(exam);
     }
