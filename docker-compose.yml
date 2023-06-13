@@ -5,6 +5,8 @@ services:
     hostname: "mysqldb"
     healthcheck:
       test: "exit 0"
+
+    command: --skip-log-bin  # Disable binlog for ezxam for the triggers to work
     environment:
       MYSQL_ROOT_PASSWORD: pass
       MYSQL_DATABASE: ezxam
