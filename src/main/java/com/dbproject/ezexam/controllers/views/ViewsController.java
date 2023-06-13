@@ -26,11 +26,12 @@ public class ViewsController {
         return "edit-topic";
     }
 
-    @RequestMapping("/insert-question-view")
-    public String editQuestionView(@RequestParam("subjectName") String subjectName, @RequestParam("topicId") String topicId, Model model) {
+    @RequestMapping("/edit-question-criteria-view")
+    public String editQuestionView(@RequestParam("subjectName") String subjectName, @RequestParam("topicId") String topicId, @RequestParam("questionId") String questionId, Model model) {
         model.addAttribute("subjectName", subjectName);
         model.addAttribute("topicId", topicId);
-        return "insert-question";
+        model.addAttribute("questionId", topicId);
+        return "edit-question-criteria";
     }
 
 }

@@ -66,7 +66,7 @@ public class SubjectController {
             topic.setQuestions(new ArrayList<>());
             topic.setName(topicName);
             subjectService.addTopicToSubject(subject, topic);
-            topicService.saveTopic(topic);
+            //topicService.saveTopic(topic); makes topic to be added twice
             return ResponseUtils.returnSuccess(subject);
         } catch (NoSuchElementException e) {
             return ResponseUtils.returnNotFound(e.getMessage());

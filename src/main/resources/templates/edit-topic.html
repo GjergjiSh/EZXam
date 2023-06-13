@@ -28,7 +28,7 @@
         <th scope="col">Question</th>
         <th scope="col"></th>
         <th scope="col" class="d-flex justify-content-end">
-          <button @click="insertQuestion()" type="button" class="btn btn-primary">Insert new question</button>
+          <button @click="addNewQuestion()" type="button" class="btn btn-primary">Insert new question</button>
         </th>
       </tr>
       </thead>
@@ -39,12 +39,26 @@
             <td x-text="question.text" id="question-text"></td>
             <td class="align-middle">
               <div class="row-buttons">
-                <button @click="editQuestion()" class="edit-button btn btn-secondary">Edit</button>
+                <button @click="editQuestion(question.id)" class="edit-button btn btn-secondary">Edit</button>
                 <button @click="await deleteQuestion(question.id)" class="btn btn-danger">Delete</button>
               </div>
             </td>
           </tr>
         </template>
+        <tr x-show="showNewQuestionRow">
+          <td>
+            <input type="text" x-model="newQuestionDescription" placeholder="Enter question description" class="form-control">
+          </td>
+          <td>
+            <input type="text" x-model="newQuestionText" placeholder="Enter question text" class="form-control">
+          </td>
+          <td class="align-middle">
+            <div class="row-buttons">
+              <button @click="saveNewQuestion()" class="btn btn-success">Save</button>
+              <button @click="cancelNewQuestion()" class="btn btn-secondary">Cancel</button>
+            </div>
+          </td>
+        </tr>
         </tbody>
     </table>
   </div>
@@ -82,8 +96,8 @@
       this.subject = await subject.json();
     },
 
-    editQuestion() {
-
+    editQuestion(questionId) {
+       window.location.href = "/edit-question-criteria-view?subjectName=" + this.subject.name + "&topicId=" + this.currentTopic.id + "&questionId=" + questionId;
     },
 
     async deleteQuestion(questionId) {
@@ -93,8 +107,24 @@
       });
     },
 
-    insertQuestion() {
-      window.location.href = "/insert-question-view?subjectName=" + this.subject.name + "&topicId=" + this.currentTopic.id;
+    showNewQuestionRow: false,
+    newQuestionDescription: '',
+    newQuestionText: '',
+
+    addNewQuestion() {
+            this.showNewQuestionRow = true;
+    },
+
+    cancelNewQuestion() {
+        this.showNewQuestionRow = false;
+    },
+
+    async saveNewQuestion() {
+        if (this.newQuestionText.trim() === '' || this.newQuestionDescription.trim() === '') {
+            return;
+        }
+        const addedQuestion = await (await ApiService.putRequest(`topics/${this.currentTopic.id}/questions?questionDescription=${this.newQuestionDescription}&questionText=${this.newQuestionText}`)).json();
+        window.location.href = "/edit-question-criteria-view?subjectName=" + this.subject.name + "&topicId=" + this.currentTopic.id + "&questionId=" + addedQuestion.id;
     }
   }));
 });

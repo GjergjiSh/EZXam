@@ -59,7 +59,9 @@
     });
 
     async function getSubjects() {
-        let subjects = await ApiService.getRequest('professors/1/subjects');
+        let storedProfessorInfo = localStorage.getItem("professorInfo");
+        let professorInfo = JSON.parse(storedProfessorInfo);
+        let subjects = await ApiService.getRequest(`professors/${professorInfo.id}/subjects`);
         return await subjects.json();
     }
 
