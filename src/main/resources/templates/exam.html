@@ -65,7 +65,8 @@
         <input class="" type="text" placeholder="Grade..." x-model="grade">
 
         <div class="d-flex justify-content-center">
-            <button type="button" class="btn btn-primary " x-on:click="finishExam(topicQuestions, grade, duration).then(r => $dispatch('exam-finished'))">
+            <button type="button" class="btn btn-primary "
+                    x-on:click="finishExam(topicQuestions, grade, duration).then(r => $dispatch('exam-finished'))">
                 Submit
             </button>
         </div>
@@ -75,22 +76,26 @@
         function getQuestions() {
             const topics = JSON.parse(localStorage.getItem("subjectTopics"))
             const topicsQuestions = []
+            let numberOfQuestionsPerTopic = 0
+            numberOfQuestionsPerTopic = topics.length < 5 ? 3 : 2
 
             for (let i = 0; i < topics.length; i++) {
                 const topic = topics[i]
                 const questionsDTOs = topic.questions
                 const topicName = topic.name
                 const questions = []
-                for (let j = 0; j < questionsDTOs.length; j++) {
+                for (let j = 0; j < numberOfQuestionsPerTopic && j < questionsDTOs.length; j++) {
                     let question = questionsDTOs[j]
                     questions.push({
                         id: question.id,
                         text: question.text,
+                        description: question.description,
                         professorComment: '',
                         points: question.points,
                         criterias: question.criterias.map(criteria => ({
                             id: criteria.id,
                             name: criteria.name,
+                            description: criteria.description,
                             weight: criteria.weight,
                             met: false,
                         }))

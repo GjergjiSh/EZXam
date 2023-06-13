@@ -195,6 +195,7 @@
                     localStorage.removeItem("examDuration")
                     localStorage.removeItem("examId")
                     this.students = await this.getStudentsWithoutSubject()
+                    this.previousView = 'subjects'
                     this.currentView = 'session'
                 },
 
