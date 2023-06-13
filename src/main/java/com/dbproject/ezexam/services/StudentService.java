@@ -13,23 +13,31 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class StudentService {
     private final StudentRepo studentRepository;
+
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }
+
     public Student getStudentById(Long id) {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
-                "Student not found with id: " + id)
-        );
+                        "Student not found with id: " + id)
+                );
     }
+
     public Student getStudentByMatnr(String matnr) {
         return studentRepository.findByMatnr(matnr)
                 .orElseThrow(() -> new NoSuchElementException(
-                "Student not found with matnr: " + matnr)
-        );
+                        "Student not found with matnr: " + matnr)
+                );
     }
+
+    public List<Student> getStudentsWithoutSubject(Long subjectId) {
+        return studentRepository.getAllStudentsWithoutSubject(subjectId);
+    }
+
     public List<Student> getStudentsByFullName(String name, String lastname) {
-        return studentRepository.findAllByNameAndLastname(name,lastname);
+        return studentRepository.findAllByNameAndLastname(name, lastname);
     }
 
     public Student saveStudent(Student student) {

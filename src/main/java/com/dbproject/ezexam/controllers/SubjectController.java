@@ -1,5 +1,6 @@
 package com.dbproject.ezexam.controllers;
 
+import com.dbproject.ezexam.entities.ExamSession;
 import com.dbproject.ezexam.entities.Subject;
 import com.dbproject.ezexam.entities.Topic;
 import com.dbproject.ezexam.services.ExamSessionService;
@@ -92,8 +93,8 @@ public class SubjectController {
     public ResponseEntity<Object> startSessionForSubject(@PathVariable Long id) {
         try {
             Subject subject = subjectService.getSubjectById(id);
-            examSessionService.startSessionForSubject(subject);
-            return ResponseUtils.returnSuccess(subject);
+            ExamSession examSession = examSessionService.startSessionForSubject(subject);
+            return ResponseUtils.returnSuccess(examSession);
         } catch (NoSuchElementException e) {
             return ResponseUtils.returnNotFound(e.getMessage());
         }

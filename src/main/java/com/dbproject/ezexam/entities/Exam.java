@@ -32,7 +32,7 @@ public class Exam {
     @NotBlank
     private Student student;
 
-    @OneToMany(mappedBy = "exam")
+    @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
     @JsonManagedReference("examAnswers")
     private List<Answer> answers;
 

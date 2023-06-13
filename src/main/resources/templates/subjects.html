@@ -10,7 +10,6 @@
 <body>
 
 <div x-data="viewData" x-init="subjects = getSubjects()">
-
     <div th:replace="~{fragments/header.html:: header(previousView)}"></div>
 
     <template x-if="currentView === 'subjects'">
@@ -31,7 +30,16 @@
                         <td class="align-middle">
                             <div class="row-buttons">
                                 <button class="edit-button btn btn-secondary">Edit</button>
-                                <button class="btn btn-primary">Start session</button>
+                                <template x-if="subject.unfinishedSession !== null">
+                                    <button class="btn btn-primary" @click=changeView('session',subject)>
+                                        Continue session
+                                    </button>
+                                </template>
+                                <template x-if="subject.unfinishedSession == null">
+                                    <button class="btn btn-primary" @click=changeView('session',subject)>
+                                        Start session
+                                    </button>
+                                </template>
                             </div>
                         </td>
 
@@ -42,36 +50,186 @@
         </div>
     </template>
 
+    <template x-if="currentView === 'session' && selectedSessionId">
+
+        <div x-init="getStudentsWithoutSubject()" th:fragment="session(sId)">
+            <div x-show="isModalOpen" class="modal my-modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Select duration (minutes)</h5>
+                        </div>
+                        <div class="modal-body">
+                            <input class="" type="text" placeholder="0" x-model="examDuration">
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" @click="closeModal()">Cancel</button>
+                            <button class="btn btn-primary" @click="startExam()">Start</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div>
+                <div class="session-header">
+                    <div th:replace="~{fragments/search-bar.html :: searchBar('student-matnr')}"></div>
+                    <button class="btn btn-success" @click="finishSession()">Finish session</button>
+                </div>
+                <table class="table centred-table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Matriculation number</th>
+                        <th scope="col">Lastname</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <template x-for="student in students">
+                        <tr>
+                            <td x-text="student.matnr" id="student-matnr"></td>
+                            <td x-text="student.lastname" id="student-last-name"></td>
+                            <td class="align-middle">
+                                <div class="row-buttons">
+                                    <button class="btn btn-primary"
+                                            @click="openModal(student.matnr)">Assign
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+
+    <template x-if="currentView === 'exam'">
+        <div th:insert="~{exam.html :: exam}" @exam-finished="examFinished()"></div>
+    </template>
 
 </div>
+
 </body>
 </html>
 
 <script type="text/javascript" src="/js/services/ApiService.js"></script>
 <script>
-    $(document).ready(function () {
-        $("#filter").on("keyup", function () {
-            const value = $(this).val().toLowerCase();
-            $("#subjects-table-body tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-
     async function getSubjects() {
-        let subjects = await ApiService.getRequest('professors/1/subjects');
-        return await subjects.json();
+        const professor = JSON.parse(localStorage.getItem('professorInfo'))
+        let subjectsRequest = await ApiService.getRequest(`professors/${professor.id}/subjects`);
+        const subjectsDTOs = await subjectsRequest.json();
+        const subjects = []
+        for (let i = 0; i < subjectsDTOs.length; i++) {
+            const subject = subjectsDTOs[i]
+            subjects.push({
+                id: subject.id,
+                name: subject.name,
+                topics: subject.topics,
+                unfinishedSession: subject.unfinishedSession
+            })
+        }
+
+        return subjects
     }
 
     document.addEventListener('alpine:init', () => {
         Alpine.data('viewData', () => ({
                 currentView: 'subjects',
                 previousView: null,
+                selectedSessionId: null,
+                selectedSubjectId: null,
+                students: [],
+                subjects: [],
+                isModalOpen: false,
+                studentMatriculationNumber: null,
+                examDuration: null,
 
-                changeView(view) {
-
+                async changeView(view, subject) {
+                    this.previousView = view === 'subjects' ? null : 'subjects';
+                    this.currentView = view
+                    if (view === 'subjects') {
+                        this.selectedSubjectId = null
+                        this.selectedSessionId = null
+                        this.subjects = getSubjects()
+                        localStorage.removeItem("examId")
+                        localStorage.removeItem("studentMatNr")
+                        localStorage.removeItem("subjectTopics")
+                        localStorage.removeItem("examSession")
+                    } else if (subject) {
+                        let session
+                        if (subject.unfinishedSession) {
+                            let request = await ApiService.getRequest(`sessions/${subject.unfinishedSession.id}`)
+                            session = await request.json()
+                        } else {
+                            let request = await ApiService.putRequest(`subjects/${subject.id}/sessions`)
+                            session = await request.json()
+                        }
+                        this.selectedSubjectId = subject.id
+                        this.selectedSessionId = session.id
+                        localStorage.setItem("examSessionId", session.id)
+                        localStorage.setItem("subjectTopics", JSON.stringify(subject.topics))
+                    }
                 },
-            })
+
+                async getStudentsWithoutSubject() {
+                    let students = await ApiService.getRequest(`students/subject/${this.selectedSubjectId}/to-do`)
+                    this.students = await students.json()
+                },
+
+                async startExam() {
+                    localStorage.setItem("studentMatriculationNumber", this.studentMatriculationNumber)
+                    const examRequest = await ApiService.putRequest(`sessions/${this.selectedSessionId}/exams/?studentMatnr=${this.studentMatriculationNumber}&duration=60`)
+                    const exam = await examRequest.json()
+                    if (exam.id) {
+                        localStorage.setItem("examDuration", this.examDuration * 60)
+                        localStorage.setItem("examId", exam.id)
+                        this.previousView = 'session'
+                        this.currentView = 'exam'
+                    }
+                    this.isModalOpen = false;
+                },
+
+                async examFinished() {
+                    localStorage.removeItem("studentMatriculationNumber")
+                    localStorage.removeItem("examDuration")
+                    localStorage.removeItem("examId")
+                    this.students = await this.getStudentsWithoutSubject()
+                    this.currentView = 'session'
+                },
+
+                async finishSession() {
+                    let request = await ApiService.putRequest(`sessions/finish/${this.selectedSessionId}`)
+                    let session = await request.json()
+                    if (session.finished) {
+                        this.changeView('subjects')
+                    }
+                },
+
+                openModal(matriculationNumber) {
+                    this.studentMatriculationNumber = matriculationNumber
+                    this.isModalOpen = true
+                },
+
+                closeModal() {
+                    this.isModalOpen = false;
+                    this.studentMatriculationNumber = null;
+                    this.examDuration = 0
+                },
+            }),
         )
     })
 </script>
+
+<style>
+    .session-header {
+        display: flex;
+        gap: 25%;
+        height: 48px;
+    }
+
+    .my-modal {
+        display: flex;
+        align-items: center;
+    }
+</style>
