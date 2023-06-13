@@ -27,7 +27,6 @@ public class ExamService {
         return examRepo.findById(id);
     }
 
-    @Transactional(rollbackOn = Exception.class)
     public Exam saveExam(Exam exam) {
         return examRepo.save(exam);
     }

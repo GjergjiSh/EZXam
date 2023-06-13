@@ -52,6 +52,7 @@ public class ExamSessionController {
         );
     }
 
+    @Transactional(rollbackOn = Exception.class)
     @PutMapping("/{id}/exams/")
     // TODO: Change the way the duration are set
     // TODO: This is also better handled transactionally
