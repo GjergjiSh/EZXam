@@ -59,4 +59,8 @@ public class SubjectService {
         subject.removeTopic(topic);
         return subjectRepo.save(subject);
     }
+
+    public Subject saveSubject(Subject subject) {
+        return subjectRepo.save(subject);
+    }
 }

@@ -4,10 +4,12 @@ import com.dbproject.ezexam.config.Role;
 import com.dbproject.ezexam.dtos.AddProfessor;
 import com.dbproject.ezexam.dtos.AddUser;
 import com.dbproject.ezexam.entities.Professor;
+import com.dbproject.ezexam.entities.Subject;
 import com.dbproject.ezexam.entities.User;
 import com.dbproject.ezexam.dtos.ExamSessionReportDTO;
 import com.dbproject.ezexam.dtos.SubjectDTO;
 import com.dbproject.ezexam.services.ProfessorService;
+import com.dbproject.ezexam.services.SubjectService;
 import com.dbproject.ezexam.utils.ResponseUtils;
 import com.dbproject.ezexam.services.UserDetailsServiceImpl;
 import com.dbproject.ezexam.services.UserService;
@@ -22,7 +24,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,6 +38,8 @@ public class ProfessorController {
     private final UserService userService;
     @Autowired
     private final UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    SubjectService subjectService;
 
     @GetMapping("/")
     public ResponseEntity<Object> getProfessors() {
@@ -43,7 +49,6 @@ public class ProfessorController {
     }
 
     @GetMapping("/{id}")
-    // TODO add error handling
     public ResponseEntity<Object> getProfessorById(@PathVariable Long id) {
         return ResponseUtils.returnSuccess(
                 professorService.getProfessorById(id)
@@ -71,5 +76,23 @@ public class ProfessorController {
     @GetMapping("/{professorId}/sessions/report")
     public ResponseEntity<List<ExamSessionReportDTO>> getProfessorExamSessionsReport(@PathVariable long professorId) {
         return professorService.getProfessorExamSessionsReport(professorId);
+    }
+
+    @PutMapping("/{professorId}/subjects")
+    public ResponseEntity<Object> assignSubjectToProfessor(@PathVariable Long professorId, @RequestParam String subjectName) {
+        try {
+            Professor professor = professorService.getProfessorById(professorId).orElseThrow(
+                    () -> new NoSuchElementException("Professor with id " + professorId + " not found")
+            );
+            Subject subject = new Subject();
+            subject.setName(subjectName);
+            subject.setExamSessions(new ArrayList<>());
+            subject.setTopics(new ArrayList<>());
+            professorService.assignSubjectToProfessor(professor, subject);
+            subjectService.saveSubject(subject);
+            return ResponseUtils.returnSuccess(professor);
+        } catch (NoSuchElementException e) {
+            return ResponseUtils.returnNotFound(e.getMessage());
+        }
     }
 }

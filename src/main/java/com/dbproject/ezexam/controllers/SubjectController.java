@@ -67,7 +67,7 @@ public class SubjectController {
             topic.setQuestions(new ArrayList<>());
             topic.setName(topicName);
             subjectService.addTopicToSubject(subject, topic);
-            //topicService.saveTopic(topic); makes topic to be added twice
+            // topicService.saveTopic(topic); makes topic to be added twice
             return ResponseUtils.returnSuccess(subject);
         } catch (NoSuchElementException e) {
             return ResponseUtils.returnNotFound(e.getMessage());
@@ -75,7 +75,6 @@ public class SubjectController {
     }
 
     @DeleteMapping("{id}/topics")
-    // TODO: Ideally done transactionally. All questions removed
     public ResponseEntity<Object> removeTopicFromSubject(@PathVariable Long id,
                                                          @RequestParam Long topicId) {
         try {

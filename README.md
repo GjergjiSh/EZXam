@@ -53,3 +53,28 @@ For now, whenever we have an SQL statement, wrap it into a transactions
 change (not included)
 2) Whenever the professor saves the exam, but 1 or more questions have not been answered, it will roll back
 3) When saving user -> save also professor
+
+# Questions / TODOS:
+
+## Questions
+1) Table Schema:
+    - Can't we just use the UML class diagrams without the functions (Basically just change the attributes)?
+    - Do we need to change the attribute types from Java to SQL? I-E Role to Long role_id
+## TODOS
+
+### Important
+1) Figure out normalization
+3) Add code as appendix
+4) Lessons Learned
+5) AI generation declaration
+
+### Also *kind* of important 
+
+5) Add points to questions
+6) Check that criteria add up to 1
+
+
+# Docs
+
+Project documentation can be found under:
+[EZXam Docs](https://www.overleaf.com/project/6457b99463c22db34cdc8016)
