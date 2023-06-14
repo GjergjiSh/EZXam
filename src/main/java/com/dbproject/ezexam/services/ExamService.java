@@ -23,6 +23,7 @@ public class ExamService {
         return examRepo.findAll();
     }
 
+    @Transactional
     public Optional<Exam> getExamById(Long id) {
         return examRepo.findById(id);
     }
