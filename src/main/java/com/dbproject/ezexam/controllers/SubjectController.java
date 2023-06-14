@@ -75,7 +75,6 @@ public class SubjectController {
     }
 
     @DeleteMapping("{id}/topics")
-    // TODO: Ideally done transactionally. All questions removed
     public ResponseEntity<Object> removeTopicFromSubject(@PathVariable Long id,
                                                          @RequestParam Long topicId) {
         try {

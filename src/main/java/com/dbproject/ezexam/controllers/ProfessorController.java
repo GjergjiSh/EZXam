@@ -49,7 +49,6 @@ public class ProfessorController {
     }
 
     @GetMapping("/{id}")
-    // TODO add error handling
     public ResponseEntity<Object> getProfessorById(@PathVariable Long id) {
         return ResponseUtils.returnSuccess(
                 professorService.getProfessorById(id)

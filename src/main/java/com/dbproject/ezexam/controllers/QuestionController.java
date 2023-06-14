@@ -17,7 +17,6 @@ import java.util.NoSuchElementException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/questions")
-// TODO: Autowiring the services - IntelliJ warns that this is not a good practice
 public class QuestionController {
     private final QuestionService questionService;
     private final CriteriaService criteriaService;
@@ -29,18 +28,8 @@ public class QuestionController {
         );
     }
 
-    @PostMapping("/subject/{subjectId}")
-    // TODO: This is dead code
-    public ResponseEntity<Object> addQuestion(@PathVariable Long subjectId,
-                                              @RequestBody Question question) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(questionService.getAllQuestions());
-    }
 
     @PutMapping("/{questionId}/criteria/")
-    // TODO: Add ideally this is done in a single transaction
     public ResponseEntity<Object> addCriteria(@PathVariable Long questionId,
                                               @RequestParam String name,
                                               @RequestParam String description,
@@ -59,7 +48,6 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{questionId}/criteria/")
-    // TODO: Add ideally this is done in a single transaction
     public ResponseEntity<Object> deleteCriteria(@PathVariable Long questionId,
                                                  @RequestParam Long criteriaId) {
         try {

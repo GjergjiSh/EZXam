@@ -54,10 +54,6 @@ public class ExamSessionController {
 
     @Transactional(rollbackOn = Exception.class)
     @PutMapping("/{id}/exams/")
-    // TODO: Change the way the duration are set
-    // TODO: This is also better handled transactionally
-    // TODO: Check if the student is already assigned to an exam in this session
-    // TODO - Question: Back vs Managed reference in student/exam? (see Student.java/Exam.java)
     public ResponseEntity<Object> startExamInSession(@PathVariable Long id,
                                                      @RequestParam String studentMatnr,
                                                      @RequestParam int duration) {
