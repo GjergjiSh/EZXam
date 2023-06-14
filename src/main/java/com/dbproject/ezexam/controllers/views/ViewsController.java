@@ -30,7 +30,7 @@ public class ViewsController {
     public String editQuestionView(@RequestParam("subjectName") String subjectName, @RequestParam("topicId") String topicId, @RequestParam("questionId") String questionId, Model model) {
         model.addAttribute("subjectName", subjectName);
         model.addAttribute("topicId", topicId);
-        model.addAttribute("questionId", topicId);
+        model.addAttribute("questionId", questionId);
         return "edit-question-criteria";
     }
 

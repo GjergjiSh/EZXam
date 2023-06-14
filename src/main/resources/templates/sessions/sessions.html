@@ -30,9 +30,9 @@
 <script type="text/javascript" src="/js/services/ApiService.js"></script>
 <script>
     async function getSessions() {
-        // TODO: Replace "1" with the professor ID. Blocked by #15.
-        let report = await ApiService.getRequest('professors/1/sessions/report')
-        return report.json()
+        const professor = JSON.parse(localStorage.getItem('professorInfo'))
+        let report = await ApiService.getRequest(`professors/${professor.id}/sessions/report`)
+        return await report.json()
     }
 
     document.addEventListener('alpine:init', () => {
@@ -49,7 +49,7 @@
                         this.sessionExams = session.exams
                     } else if (view === 'session-analysis') {
                         this.sessionReport = {
-                            numberOfExams: session.exams.length,
+                            numberOfExams: session.fails + session.passes,
                             highestGrade: session.highestGrade,
                             averageGrade: session.averageGrade,
                             fails: session.fails,

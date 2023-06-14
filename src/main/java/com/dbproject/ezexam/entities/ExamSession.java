@@ -49,4 +49,8 @@ public class ExamSession {
     public void removeExam(Exam exam) {
         this.exams.remove(exam);
     }
+
+    public void setFinished(Boolean finished) {
+        this.finished = finished;
+    }
 }

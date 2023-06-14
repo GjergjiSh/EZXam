@@ -1,0 +1,198 @@
+<div x-data="{topicQuestions: [], grade: 0, duration: 0}"
+     x-init="topicQuestions=getQuestions(); duration=localStorage.getItem('examDuration'); $watch('topicQuestions', value => grade = updateGrade(value));
+     durationInterval = setInterval(() => {
+        duration -= 1
+        if (duration < 1) {
+        clearInterval(durationInterval)}
+      }, 1000)"
+     th:fragment="exam">
+    <div x-text="getDuration(duration)" style="margin-left: 70%"></div>
+    <table class="table centred-table table-borderless">
+        <thead>
+        <tr>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <template x-for="topicQuestion in topicQuestions">
+            <tr>
+                <td>
+                    <h3 x-text="topicQuestion.topicName"></h3>
+                    <table class="table table-borderless">
+                        <thead>
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <template x-for="question in topicQuestion.questions">
+                            <tr>
+                                <td>
+                                    <div x-text="question.text" class="mt-4"></div>
+                                    <h4 class="fw-bold text-center mt-3"></h4>
+                                    <p class="fw-bold">Criteria</p>
+                                    <div class="mb-4">
+                                        <template x-for="criteria in question.criterias">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       x-on:click="criteria.met=!criteria.met"/>
+                                                <label class="form-check-label" x-text="criteria.name"></label>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="fw-bold" for="professorsNotes">Notes</label>
+                                        <textarea class="form-control" id="professorsNotes" rows="3"
+                                                  x-model="question.professorComment"></textarea>
+                                    </div>
+
+                                    <div class="card-footer text-end"></div>
+                                    <hr class="hr"/>
+
+                                </td>
+                            </tr>
+
+                        </template>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </template>
+        </tbody>
+    </table>
+
+    <div style="width: 50%; margin: auto auto 2%;display:flex; justify-content: space-between">
+        <input class="" type="text" placeholder="Grade..." x-model="grade">
+
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-primary " x-on:click="finishExam(topicQuestions, grade, duration).then(r => $dispatch('exam-finished'))">
+                Submit
+            </button>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        function getQuestions() {
+            const topics = JSON.parse(localStorage.getItem("subjectTopics"))
+            const topicsQuestions = []
+
+            for (let i = 0; i < topics.length; i++) {
+                const topic = topics[i]
+                const questionsDTOs = topic.questions
+                const topicName = topic.name
+                const questions = []
+                for (let j = 0; j < questionsDTOs.length; j++) {
+                    let question = questionsDTOs[j]
+                    questions.push({
+                        id: question.id,
+                        text: question.text,
+                        professorComment: '',
+                        points: question.points,
+                        criterias: question.criterias.map(criteria => ({
+                            id: criteria.id,
+                            name: criteria.name,
+                            weight: criteria.weight,
+                            met: false,
+                        }))
+                    })
+                }
+                topicsQuestions.push({topicName: topicName, questions: questions})
+            }
+
+            return topicsQuestions
+        }
+
+        function updateGrade(topicQuestions) {
+            let grade = 0
+            let maxGrade = 0
+            topicQuestions.forEach(topicQuestion => {
+                topicQuestion.questions.forEach(question => {
+                    const questionPoints = question.points
+                    maxGrade += questionPoints
+                    let questionScore = 0
+                    question.criterias.forEach(criteria => {
+                        questionScore = questionScore += criteria.met ? questionPoints * criteria.weight : 0
+                    })
+                    grade += questionScore
+                })
+            })
+            grade = 100 * grade / maxGrade
+
+            if (grade > 90) return 1.0
+            if (grade > 80) return 1.5
+            if (grade > 70) return 2.0
+            if (grade > 60) return 2.5
+            if (grade > 55) return 3.0
+            if (grade > 50) return 3.5
+            if (grade > 40) return 4.0
+            if (grade > 30) return 4.5
+            return 5.0
+        }
+
+        function getDuration(durationInSeconds) {
+            let minutes = Math.floor(durationInSeconds / 60)
+            let hours = Math.floor(minutes / 60)
+            durationInSeconds = durationInSeconds % 60
+            minutes = minutes % 60
+            let durationToDisplay = ''
+            if (hours > 0) {
+                durationToDisplay = durationToDisplay.concat((getFormattedDuration(hours)) + ":")
+            } else {
+                durationToDisplay = durationToDisplay.concat(("00:"))
+            }
+            if (minutes > 0) {
+                durationToDisplay = durationToDisplay.concat(getFormattedDuration(minutes) + ":")
+            } else {
+                durationToDisplay = durationToDisplay.concat('00:')
+            }
+            durationToDisplay = durationToDisplay.concat((getFormattedDuration(durationInSeconds)))
+
+            return durationToDisplay
+        }
+
+        function getFormattedDuration(duration) {
+            return ("00" + duration).slice(-2);
+        }
+
+        async function finishExam(topicQuestions, grade, duration) {
+            const finishedExam = {
+                examId: localStorage.getItem("examId"),
+                examSessionId: localStorage.getItem("examSessionId"),
+                studentMatriculationNumber: localStorage.getItem("studentMatriculationNumber"),
+                duration: Math.floor(duration / 60),
+                grade: grade,
+                answers: [],
+            }
+
+            for (let i = 0; i < topicQuestions.length; i++) {
+                const questions = topicQuestions[i].questions
+                for (let j = 0; j < questions.length; j++) {
+                    const question = questions[j]
+                    const metCriterias = questions[j].criterias.filter(criteria => criteria.met)
+                    const points = question.points
+                    let reachedWeight = 0
+                    metCriterias.forEach(metCriteria => reachedWeight += metCriteria.weight)
+
+                    finishedExam.answers.push({
+                        question: question.text,
+                        text: question.professorComment,
+                        points: points,
+                        description: question.description,
+                        achievedPoints: points * reachedWeight,
+                        answerCriterias: metCriterias.map(metCriteria => ({
+                            name: metCriteria.name,
+                            description: metCriteria.description,
+                            weight: metCriteria.weight,
+                            met: true,
+                        })),
+
+                    })
+
+                }
+            }
+
+            const examRequest = await ApiService.putRequest('exams/update', finishedExam)
+            return await examRequest.json()
+        }
+    </script>
+</div>

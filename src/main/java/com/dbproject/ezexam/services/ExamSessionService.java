@@ -16,10 +16,18 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class ExamSessionService {
     private final ExamSessionRepo examSessionRepo;
+
+    public ExamSession getExamSession(Long id) {
+        return examSessionRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Exam session not found with examId: " + id));
+    }
+
     public List<ExamSession> getAllExamSessions() {
         return examSessionRepo.findAll();
     }
-    public List<ExamSession> getSubjectExamSessions(Long subjectId) {return examSessionRepo.findBySubjectId(subjectId);}
+
+    public List<ExamSession> getSubjectExamSessions(Long subjectId) {
+        return examSessionRepo.findBySubjectId(subjectId);
+    }
 
 
     public ExamSession startSessionForSubject(Subject subject) {
@@ -33,7 +41,7 @@ public class ExamSessionService {
     public ExamSession getExamSessionById(Long id) {
         return examSessionRepo.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
-                        "Exam session not found with id: " + id)
+                        "Exam session not found with examId: " + id)
                 );
     }
 
@@ -44,6 +52,12 @@ public class ExamSessionService {
     public ExamSession assignExam(ExamSession examSession, Exam exam) {
         examSession.addExam(exam);
         exam.setExamSession(examSession);
+        return saveExamSession(examSession);
+    }
+
+    public Object finishExamSession(Long id) {
+        ExamSession examSession = getExamSessionById(id);
+        examSession.setFinished(true);
         return saveExamSession(examSession);
     }
 }
