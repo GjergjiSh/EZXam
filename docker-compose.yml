@@ -10,6 +10,8 @@ services:
       MYSQL_DATABASE: ezxam
       MYSQL_USER: user
       MYSQL_PASSWORD: 123Stella
+    command:
+      - --skip-log-bin
     ports:
       - "3307:3306"
     volumes:

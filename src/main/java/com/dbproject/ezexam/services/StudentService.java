@@ -3,6 +3,7 @@ package com.dbproject.ezexam.services;
 import com.dbproject.ezexam.entities.Exam;
 import com.dbproject.ezexam.entities.Student;
 import com.dbproject.ezexam.repositories.StudentRepo;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ public class StudentService {
                 );
     }
 
+    @Transactional
     public List<Student> getStudentsWithoutSubject(Long subjectId) {
         return studentRepository.getAllStudentsWithoutSubject(subjectId);
     }
