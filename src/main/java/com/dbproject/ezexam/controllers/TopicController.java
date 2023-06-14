@@ -25,10 +25,11 @@ public class TopicController {
     }
 
     @PutMapping("/{topicId}/questions")
-    public ResponseEntity<Object> addQuestionToTopic(@PathVariable Long topicId, @RequestParam String questionDescription) {
+    public ResponseEntity<Object> addQuestionToTopic(@PathVariable Long topicId, @RequestParam String questionDescription, @RequestParam String questionText) {
         try {
             Topic topic = topicService.getTopicById(topicId);
             Question question = new Question();
+            question.setText(questionDescription);
             question.setDescription(questionDescription);
             question.setCriterias(new ArrayList<>());
             topicService.addQuestionToTopic(topic, question);

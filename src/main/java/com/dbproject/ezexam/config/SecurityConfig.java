@@ -50,13 +50,15 @@ public class SecurityConfig {
                         "/sessions/**",
                         "/questions/**",
                         "/students/**",
-                        "/subjects/**"
+                        "/subjects/**",
+                        "/**-view"
                         )
                 .authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login-registration-view")
+                        .permitAll()
                         .defaultSuccessUrl("/subjects-view", true)
                 )
                 .logout(logout -> logout

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" th:href="@{/styles/table.css}">
+  <link rel="stylesheet" th:href="@{/styles/centered-table-search-bar.css}">
+  <link rel="stylesheet" th:href="@{/styles/hide-cloack.css}">
+  <th:block th:replace="~{fragments/layout.html :: config}"></th:block>
+  <style>
+    .container-flex {
+      display: flex;
+      align-items: center;
+    }
+  </style>
+</head>
+
+<body>
+<div x-data="viewData" x-init="await initialize()">
+
+  <div th:replace="~{fragments/header.html:: header(previousView)}"></div>
+
+  <div class="container-flex d-flex align-items-center flex-column">
+    <h1 x-text="currentTopic.name"></h1>
+    <div class="mr-30 mt-10" th:replace="~{fragments/search-bar.html :: searchBar('question-description')}"></div>
+
+    <table class="table centred-table" id="subjectTopicsQuestions-table">
+      <thead>
+      <tr>
+        <th scope="col">Question</th>
+        <th scope="col"></th>
+        <th scope="col" class="d-flex justify-content-end">
+          <button @click="addNewQuestion()" type="button" class="btn btn-primary">Insert new question</button>
+        </th>
+      </tr>
+      </thead>
+        <tbody>
+        <template x-for="question in currentTopic.questions" :key="question.id">
+          <tr>
+            <td x-text="question.description" id="question-description"></td>
+            <td x-text="question.text" id="question-text"></td>
+            <td class="align-middle">
+              <div class="row-buttons">
+                <button @click="editQuestion(question.id)" class="edit-button btn btn-secondary">Edit</button>
+                <button @click="await deleteQuestion(question.id)" class="btn btn-danger">Delete</button>
+              </div>
+            </td>
+          </tr>
+        </template>
+        <tr x-show="showNewQuestionRow">
+          <td>
+            <input type="text" x-model="newQuestionDescription" placeholder="Enter question description" class="form-control">
+          </td>
+          <td>
+            <input type="text" x-model="newQuestionText" placeholder="Enter question text" class="form-control">
+          </td>
+          <td class="align-middle">
+            <div class="row-buttons">
+              <button @click="saveNewQuestion()" class="btn btn-success">Save</button>
+              <button @click="cancelNewQuestion()" class="btn btn-secondary">Cancel</button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript" src="/js/services/ApiService.js"></script>
+<script th:inline="javascript">
+   document.addEventListener('alpine:init', () => {
+  Alpine.data('viewData', () => ({
+    previousView: "/edit-subject-view?subjectName=" + /*[[${subjectName}]]*/ '',
+    professor: JSON.parse(localStorage.getItem("professorInfo")),
+    subject: {},
+    currentTopic: {},
+
+    async initialize() {
+      this.getSubjectInfo().then(() => {
+        this.setCurrentTopic(/*[[${topicId}]]*/ '');
+      });
+    },
+
+    setCurrentTopic(topicId) {
+      console.log("Current topic id: " + topicId);
+      this.currentTopic = this.subject.topics.find(topic => topic.id == topicId);
+    },
+
+    changeView(view) {
+      window.location.href = view;
+    },
+
+    async getSubjectInfo() {
+      let subjectName = /*[[${subjectName}]]*/ '';
+      let subject = await ApiService.getRequest(`subjects/${subjectName}`);
+      this.subject = await subject.json();
+    },
+
+    editQuestion(questionId) {
+       window.location.href = "/edit-question-criteria-view?subjectName=" + this.subject.name + "&topicId=" + this.currentTopic.id + "&questionId=" + questionId;
+    },
+
+    async deleteQuestion(questionId) {
+      await ApiService.deleteRequest(`topics/${this.currentTopic.id}/questions/?questionId=${questionId}`);
+      this.getSubjectInfo().then(() => {
+        this.setCurrentTopic(/*[[${topicId}]]*/ '');
+      });
+    },
+
+    showNewQuestionRow: false,
+    newQuestionDescription: '',
+    newQuestionText: '',
+
+    addNewQuestion() {
+            this.showNewQuestionRow = true;
+    },
+
+    cancelNewQuestion() {
+        this.showNewQuestionRow = false;
+    },
+
+    async saveNewQuestion() {
+        if (this.newQuestionText.trim() === '' || this.newQuestionDescription.trim() === '') {
+            return;
+        }
+        const addedQuestion = await (await ApiService.putRequest(`topics/${this.currentTopic.id}/questions?questionDescription=${this.newQuestionDescription}&questionText=${this.newQuestionText}`)).json();
+        window.location.href = "/edit-question-criteria-view?subjectName=" + this.subject.name + "&topicId=" + this.currentTopic.id + "&questionId=" + addedQuestion.id;
+    }
+  }));
+});
+  </script>
