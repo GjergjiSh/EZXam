@@ -1,6 +1,8 @@
 package com.dbproject.ezexam.entities;
 
 import com.dbproject.ezexam.config.Role;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -37,6 +39,7 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "user")
     @NotBlank
+    @JsonBackReference("professorUser")
     private Professor professor;
 
 

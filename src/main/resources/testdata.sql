@@ -69,13 +69,13 @@ VALUES (1, 'Criteria 1', 'Criteria description 1', 0.5, true),
 
 
 -- TRIGGERS
-drop trigger if exists createSessionAnalysis;
-create trigger createSessionAnalysis
-    AFTER INSERT
-    on exam_sessions
-    for each row
-    insert into exam_session_analysis(exam_session_id, average_grade, fail, highest_grade, number_of_participants, pass)
-    values (NEW.id, 0, 0.0, 0.0, 0, 0);
+-- drop trigger if exists createSessionAnalysis;
+-- create trigger createSessionAnalysis
+--     AFTER INSERT
+--     on exam_sessions
+--     for each row
+--     insert into exam_session_analysis(exam_session_id, average_grade, fail, highest_grade, number_of_participants, pass)
+--     values (NEW.id, 0, 0.0, 0.0, 0, 0);
 
 -- TRIGGERS TO INJECT INTO THE DB:
 

@@ -5,6 +5,7 @@ import com.dbproject.ezexam.dtos.ExamSessionReportDTO;
 import com.dbproject.ezexam.dtos.SubjectDTO;
 import com.dbproject.ezexam.entities.*;
 import com.dbproject.ezexam.repositories.ProfessorRepo;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,19 @@ public class ProfessorService {
                         getExamSessionReportDTO(subject, examSession)
                 ).toList()
         ).flatMap(Collection::stream).toList())).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @Transactional
+    public Professor assignSubjectToProfessor(Professor professor, Subject subject) {
+        professor.addSubject(subject);
+        subject.setProfessor(professor);
+        return professorRepository.save(professor);
+    }
+
+    @Transactional
+    public Professor removeSubjectFromProfessor(Professor professor, Subject subject) {
+        professor.removeSubject(subject);
+        return professorRepository.save(professor);
     }
 
     private ExamSessionReportDTO getExamSessionReportDTO(Subject subject, ExamSession examSession) {
