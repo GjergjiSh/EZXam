@@ -64,10 +64,9 @@ change (not included)
 
 ### Important
 1) Figure out normalization
-2) Write security constraints
-3) Clean up code and comments and add code as appendix
+3) Add code as appendix
 4) Lessons Learned
-5) AI generation declearation
+5) AI generation declaration
 
 ### Also *kind* of important 
 
