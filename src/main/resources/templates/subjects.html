@@ -29,7 +29,7 @@
                         <td x-text="subject.name" id="subject-name"></td>
                         <td class="align-middle">
                             <div class="row-buttons">
-                                <button class="edit-button btn btn-secondary">Edit</button>
+                                <button @click="editSubject(subject.name)" class="edit-button btn btn-secondary">Edit</button>
                                 <template x-if="subject.unfinishedSession !== null">
                                     <button class="btn btn-primary" @click=changeView('session',subject)>
                                         Continue session
@@ -197,7 +197,9 @@
                     this.students = await this.getStudentsWithoutSubject()
                     this.currentView = 'session'
                 },
-
+                editSubject(subjectName) {
+                    window.location.href = "/edit-subject-view?subjectName=" + subjectName;
+                },
                 async finishSession() {
                     let request = await ApiService.putRequest(`sessions/finish/${this.selectedSessionId}`)
                     let session = await request.json()

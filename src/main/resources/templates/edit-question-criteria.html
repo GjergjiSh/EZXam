@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" th:href="@{/styles/table.css}">
+  <link rel="stylesheet" th:href="@{/styles/centered-table-search-bar.css}">
+  <link rel="stylesheet" th:href="@{/styles/hide-cloack.css}">
+  <th:block th:replace="~{fragments/layout.html :: config}"></th:block>
+</head>
+<body>
+<div x-data="viewData" x-init="initialize()">
+
+  <div th:replace="~{fragments/header.html:: header(previousView)}"></div>
+  <div class="container-flex d-flex align-items-center flex-column">
+    <h1 x-text="labelAddQuestion"></h1>
+    <div class="w-50 d-flex flex-column">
+      <p x-text="currentQuestion.description" class="font-weight-bold"></p>
+    </div>
+    <div class="w-50 d-flex flex-column mt-20">
+      <p x-text="currentQuestion.text" class="font-weight-bold"></p>
+    </div>
+    <div class="container-flex d-flex align-items-start w-100">
+      <div class="w-25"></div>
+      <div class="w-50">
+        <h2>Criterias</h2>
+        <div class="d-flex w-90">
+          <button @click="addNewCriteria()" type="button" class="btn btn-info">New</button>
+        </div>
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Weight</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <template x-for="criteria in currentQuestion.criterias" :key="criteria.id">
+            <tr>
+              <td x-text="criteria.name"></td>
+              <td x-text="criteria.description"></td>
+              <td x-text="criteria.weight"></td>
+              <td><button @click="await deleteCriteria(criteria.id)" type="button" class="btn btn-danger">Delete</button></td>
+            </tr>
+          </template>
+          <tr x-show="showNewCriteriaRow">
+            <td>
+              <input type="text" x-model="newCriteriaName" placeholder="Enter criteria name" class="form-control">
+            </td>
+            <td>
+              <input type="text" x-model="newCriteriaDescription" placeholder="Enter criteria description" class="form-control">
+            </td>
+            <td>
+              <input type="text" x-model="newCriteriaWeight" placeholder="Enter criteria weight" class="form-control">
+            </td>
+            <td class="align-middle">
+              <div class="row-buttons">
+                <button @click="await saveNewCriteria()" class="btn btn-success">Save</button>
+                <button @click="cancelNewCriteria()" class="btn btn-secondary">Cancel</button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+
+</html>
+
+<script type="text/javascript" src="/js/services/ApiService.js"></script>
+<script th:inline="javascript">
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('viewData', () => ({
+        previousView: "/edit-subject-view?subjectName=" + /*[[${subjectName}]]*/ '',
+        professor: JSON.parse(localStorage.getItem("professorInfo")),
+        subject: {},
+        currentTopic: {},
+        currentQuestion: {},
+        labelAddQuestion: "",
+
+        initialize() {
+          this.getSubjectInfo().then(() => {
+            this.setCurrentTopic(/*[[${topicId}]]*/ '');
+            this.setCurrentQuestion(parseInt(/*[[${topicId}]]*/ ''), parseInt(/*[[${questionId}]]*/ ''));
+            this.labelAddQuestion = "Question in " + this.currentTopic.name + " topic";
+          });
+        },
+
+        setCurrentTopic(topicId) {
+          console.log("Current topic id: " + topicId);
+          this.currentTopic = this.subject.topics.find(topic => topic.id === topicId);
+        },
+
+        setCurrentQuestion(currentTopicId, questionId) {
+          this.currentQuestion = (this.subject.topics.find(topic => topic.id === currentTopicId)).questions.find(question => question.id === questionId);
+        },
+
+        changeView(view) {
+          window.location.href = view;
+        },
+
+        async getSubjectInfo() {
+          let subjectName = /*[[${subjectName}]]*/ '';
+          let subject = await ApiService.getRequest("subjects/" + subjectName);
+          this.subject = await subject.json();
+        },
+
+          showNewCriteriaRow: false,
+          newCriteriaName: '',
+          newCriteriaDescription: '',
+          newCriteriaWeight: 0.1,
+
+          addNewCriteria() {
+              this.showNewCriteriaRow = true;
+          },
+
+          cancelNewCriteria() {
+              this.showNewCriteriaRow = false;
+          },
+
+          async deleteCriteria(criteriaId){
+               await ApiService.deleteRequest(`questions/${this.currentQuestion.id}/criteria/?criteriaId=${criteriaId}`);
+               this.initialize();
+          },
+
+          async saveNewCriteria() {
+              if (this.newCriteriaName.trim() === '' || this.newCriteriaDescription.trim() === '' || this.newCriteriaWeight == 0.0) {
+                  return;
+              }
+              await ApiService.putRequest(`questions/${this.currentQuestion.id}/criteria/?name=${this.newCriteriaName}&description=${this.newCriteriaDescription}&weight=${this.newCriteriaWeight}`);
+              this.initialize();
+          }
+
+
+
+      }));
+    });
+  </script>
