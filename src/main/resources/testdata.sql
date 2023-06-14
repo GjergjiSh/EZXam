@@ -69,19 +69,6 @@ VALUES (1, 'Criteria 1', 'Criteria description 1', 0.5, true),
 
 
 -- TRIGGERS
--- If an exam was started, but never finished, when finishing the session the exam will be removed
-drop trigger if exists deleteSessionUnfinishedExams;
-CREATE TRIGGER deleteSessionUnfinishedExams
-    BEFORE UPDATE
-    ON exam_sessions
-    FOR EACH ROW
-    DELETE
-    from exams
-    WHERE NEW.finished = true
-      and exams.exam_session_id = NEW.id
-      and exams.grade = 0;
-
-
 drop trigger if exists createSessionAnalysis;
 create trigger createSessionAnalysis
     AFTER INSERT
@@ -90,43 +77,75 @@ create trigger createSessionAnalysis
     insert into exam_session_analysis(exam_session_id, average_grade, fail, highest_grade, number_of_participants, pass)
     values (NEW.id, 0, 0.0, 0.0, 0, 0);
 
+-- TRIGGERS TO INJECT INTO THE DB:
 
-drop trigger if exists updateAnalysis;
-CREATE TRIGGER updateAnalysis
-       AFTER UPDATE
-       ON exams
-       FOR EACH ROW
-       UPDATE exam_session_analysis
-       set exam_session_analysis.exam_session_id=NEW.exam_session_id,
-           exam_session_analysis.average_grade=(select avg(grade)
-                                                from exams
-                                                WHERE exams.exam_session_id = NEW.exam_session_id
-                                                  and exams.grade >= 1.0),
-           exam_session_analysis.fail=
-                  (SELECT COUNT(exams.student_id)
-                   FROM exams
-                               join exam_sessions on exam_sessions.id = exams.exam_session_id
-                   WHERE exams.exam_session_id = NEW.exam_session_id
-                     and exams.grade > 4.0),
-           exam_session_analysis.highest_grade=
-                  (select MIN(grade)
-                   from exams
-                   WHERE exams.exam_session_id = NEW.exam_session_id
-                     and exams.grade >= 1.0),
-           exam_session_analysis.number_of_participants=
-                  (SELECT COUNT(exams.student_id)
-                   FROM exams
-                               join exam_sessions on exam_sessions.id = exams.exam_session_id
-                   WHERE exams.exam_session_id = NEW.exam_session_id
-                     and grade >= 1.0),
-           exam_session_analysis.pass=
-                  (SELECT COUNT(exams.student_id)
-                   FROM exams
-                               join exam_sessions on exam_sessions.id = exams.exam_session_id
-                   WHERE exams.exam_session_id = NEW.exam_session_id
-                     and exams.grade < 4.0
-                     and exams.grade >= 1.0)
-       where exam_session_analysis.exam_session_id = NEW.exam_session_id;
+-- If an exam was started, but never finished, when finishing the session the exam will be removed
+-- delimiter //
+-- drop trigger if exists deleteSessionUnfinishedExams;
+-- CREATE TRIGGER deleteSessionUnfinishedExams
+--     BEFORE UPDATE
+--     ON exam_sessions
+--     FOR EACH ROW
+-- begin
+--     DELETE
+--     from answer_criterias
+--     where answer_criterias.answer_id IN (SELECT answers.exam_id
+--                                          from answers
+--                                                   join exams on exams.id = answers.exam_id
+--                                          where exams.exam_session_id = NEW.id
+--                                            and exams.grade = 0);
+--     DELETE
+--     from answers
+--     where answers.exam_id = (SELECT exams.id
+--                              from exams
+--                              where exams.exam_session_id = NEW.id
+--                                and exams.grade = 0);
+--     DELETE
+--     from exams
+--     WHERE NEW.finished = true
+--       and exams.exam_session_id = NEW.id
+--       and exams.grade = 0;
+--
+-- end;
+-- delimiter ;
+
+
+-- Update session analysis every time an exam is finished
+-- drop trigger if exists updateAnalysis;
+-- CREATE TRIGGER updateAnalysis
+--        AFTER UPDATE
+--        ON exams
+--        FOR EACH ROW
+--     IF (NEW.grade >= 1.0) THEN
+--        UPDATE exam_session_analysis
+--        set exam_session_analysis.exam_session_id=NEW.exam_session_id,
+--            exam_session_analysis.average_grade=(select avg(grade)
+--                                                 from exams
+--                                                 WHERE exams.exam_session_id = NEW.exam_session_id),
+--            exam_session_analysis.fail=
+--                   (SELECT COUNT(exams.student_id)
+--                    FROM exams
+--                                join exam_sessions on exam_sessions.id = exams.exam_session_id
+--                    WHERE exams.exam_session_id = NEW.exam_session_id
+--                      and exams.grade > 4.0),
+--            exam_session_analysis.highest_grade=
+--                   (select MIN(grade)
+--                    from exams
+--                    WHERE exams.exam_session_id = NEW.exam_session_id),
+--            exam_session_analysis.number_of_participants=
+--                   (SELECT COUNT(exams.student_id)
+--                    FROM exams
+--                                join exam_sessions on exam_sessions.id = exams.exam_session_id
+--                    WHERE exams.exam_session_id = NEW.exam_session_id),
+--            exam_session_analysis.pass=
+--                   (SELECT COUNT(exams.student_id)
+--                    FROM exams
+--                                join exam_sessions on exam_sessions.id = exams.exam_session_id
+--                    WHERE exams.exam_session_id = NEW.exam_session_id
+--                      and exams.grade < 4.0)
+--        where exam_session_analysis.exam_session_id = NEW.exam_session_id;
+-- END IF
+
 
 -- When a session is over, adapt grades to average
 -- CREATE TRIGGER adaptGradesToAverage
@@ -142,37 +161,3 @@ CREATE TRIGGER updateAnalysis
 --     WHERE exams.exam_session_id = NEW.id
 --       and exams.grade > 1.6;
 --     End IF;
-
--- CREATE TRIGGER adaptGradesToAverage
---     AFTER UPDATE
---     ON exam_sessions
---     FOR EACH ROW
---
---     UPDATE exams
---     set exams.grade=exams.grade - 0.5
---     WHERE exams.exam_session_id = NEW.id
---       and exams.grade > 1.6
---       and 2.0 < (select avg(grade)
---     WHERE exams.exam_session_id = NEW.id);
-
--- DROP TRIGGER IF EXISTS adaptGradesToAverage;
--- CREATE TRIGGER adaptGradesToAverage
---        AFTER UPDATE
---        ON exam_sessions
---        FOR EACH ROW
---     BEGIN
---         select avg(exams.grade)
---         into @averageGrade
---         from exams
---         WHERE exams.exam_session_id = NEW.id
---           and NEW.finished = true;
---         UPDATE exams
---         set exams.grade=exams.grade - 0.5
---         WHERE exams.exam_session_id = NEW.id
---             and NEW.finished = true
---             and exams.grade > 1.6;
---             and 2.0 < @averageGrade;
---     end;
-
-
--- delimiter ;

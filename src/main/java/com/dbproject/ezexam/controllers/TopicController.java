@@ -33,7 +33,6 @@ public class TopicController {
             question.setDescription(questionDescription);
             question.setCriterias(new ArrayList<>());
             topicService.addQuestionToTopic(topic, question);
-            //questionService.saveQuestion(question); makes question to be added twice
             return ResponseUtils.returnSuccess(topic);
         } catch (NoSuchElementException e) {
             return ResponseUtils.returnNotFound(e.getMessage());
