@@ -67,6 +67,7 @@ change (not included)
 2) Write security constraints
 3) Clean up code and comments and add code as appendix
 4) Lessons Learned
+5) AI generation declearation
 
 ### Also *kind* of important 
 
