@@ -85,19 +85,18 @@
         initialize() {
           this.getSubjectInfo().then(() => {
             this.setCurrentTopic(/*[[${topicId}]]*/ '');
-            this.setCurrentQuestion(/*[[${topicId}]]*/ '', /*[[${questionId}]]*/ '');
+            this.setCurrentQuestion(parseInt(/*[[${topicId}]]*/ ''), parseInt(/*[[${questionId}]]*/ ''));
             this.labelAddQuestion = "Question in " + this.currentTopic.name + " topic";
           });
         },
 
         setCurrentTopic(topicId) {
           console.log("Current topic id: " + topicId);
-          this.currentTopic = this.subject.topics.find(topic => topic.id == topicId);
+          this.currentTopic = this.subject.topics.find(topic => topic.id === topicId);
         },
 
         setCurrentQuestion(currentTopicId, questionId) {
-          console.log("Current question id: " + questionId);
-          this.currentQuestion = (this.subject.topics.find(topic => topic.id == currentTopicId)).questions.find(question => question.id == questionId);
+          this.currentQuestion = (this.subject.topics.find(topic => topic.id === currentTopicId)).questions.find(question => question.id === questionId);
         },
 
         changeView(view) {
