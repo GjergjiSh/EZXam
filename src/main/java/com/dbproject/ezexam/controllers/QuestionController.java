@@ -49,7 +49,7 @@ public class QuestionController {
             Question question = questionService.getQuestionById(questionId);
             Criteria criteria = new Criteria(name, description, weight);
             questionService.addCriteriaToQuestion(question, criteria);
-            criteriaService.saveCriteria(criteria);
+            //criteriaService.saveCriteria(criteria); makes criteria to be added twice
             return ResponseUtils.returnSuccess(question);
         } catch (NoSuchElementException e) {
             return ResponseUtils.returnNotFound(
