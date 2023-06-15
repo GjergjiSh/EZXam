@@ -25,13 +25,14 @@ public class TopicController {
     }
 
     @PutMapping("/{topicId}/questions")
-    public ResponseEntity<Object> addQuestionToTopic(@PathVariable Long topicId, @RequestParam String questionDescription, @RequestParam String questionText) {
+    public ResponseEntity<Object> addQuestionToTopic(@PathVariable Long topicId, @RequestParam String questionDescription, @RequestParam String questionText, @RequestParam double questionPoints) {
         try {
             Topic topic = topicService.getTopicById(topicId);
             Question question = new Question();
             question.setText(questionDescription);
             question.setDescription(questionDescription);
             question.setCriterias(new ArrayList<>());
+            question.setPoints(questionPoints);
             topicService.addQuestionToTopic(topic, question);
             return ResponseUtils.returnSuccess(topic);
         } catch (NoSuchElementException e) {
