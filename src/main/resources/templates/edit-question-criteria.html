@@ -7,7 +7,7 @@
   <th:block th:replace="~{fragments/layout.html :: config}"></th:block>
 </head>
 <body>
-<div x-data="viewData" x-init="initialize()">
+<div x-data="viewData" x-init="await initialize()">
 
   <div th:replace="~{fragments/header.html:: header(previousView)}"></div>
   <div class="container-flex d-flex align-items-center flex-column">
@@ -55,12 +55,16 @@
             </td>
             <td class="align-middle">
               <div class="row-buttons">
-                <button @click="await saveNewCriteria()" class="btn btn-success">Save</button>
+                <button x-show="weightsError" @click="await saveNewCriteria()" class="btn btn-success disabled">Save</button>
+                <button x-show="!weightsError" @click="await saveNewCriteria()" class="btn btn-success">Save</button>
                 <button @click="cancelNewCriteria()" class="btn btn-secondary">Cancel</button>
               </div>
             </td>
           </tr>
           </tbody>
+          <div x-show="weightsError && showNewCriteriaRow" class="alert alert-danger" role="alert">
+            Sum of weights are not 1 !
+          </div>
         </table>
       </div>
     </div>
@@ -82,21 +86,38 @@
         currentQuestion: {},
         labelAddQuestion: "",
 
-        initialize() {
-          this.getSubjectInfo().then(() => {
+        async initialize() {
+          await this.getSubjectInfo().then(() => {
             this.setCurrentTopic(/*[[${topicId}]]*/ '');
             this.setCurrentQuestion(parseInt(/*[[${topicId}]]*/ ''), parseInt(/*[[${questionId}]]*/ ''));
             this.labelAddQuestion = "Question in " + this.currentTopic.name + " topic";
           });
+          this.checkWeightsError();
+
+           this.$watch('newCriteriaWeight', () => {
+              this.checkWeightsError();
+           });
+        },
+
+        checkWeightsError(){
+              const self = this;
+              console.log("newCriteriaWeight is changed");
+              let sumOfWeights = self.currentQuestion.criterias.reduce((total, criteria) => {
+                return total + criteria.weight;
+              }, 0);
+              let newCriteriaWeightFloat = parseFloat(this.newCriteriaWeight);
+              self.weightsError =  newCriteriaWeightFloat !== NaN && (sumOfWeights + newCriteriaWeightFloat != 1);
+              console.log("Current sum is: " + (sumOfWeights + newCriteriaWeightFloat) );
         },
 
         setCurrentTopic(topicId) {
           console.log("Current topic id: " + topicId);
-          this.currentTopic = this.subject.topics.find(topic => topic.id === topicId);
+          console.log("Current topics: " + this.subject.topics);
+          this.currentTopic = (this.subject.topics).find(topic => topic.id == topicId);
         },
 
         setCurrentQuestion(currentTopicId, questionId) {
-          this.currentQuestion = (this.subject.topics.find(topic => topic.id === currentTopicId)).questions.find(question => question.id === questionId);
+          this.currentQuestion = (this.subject.topics.find(topic => topic.id == currentTopicId)).questions.find(question => question.id === questionId);
         },
 
         changeView(view) {
@@ -112,7 +133,8 @@
           showNewCriteriaRow: false,
           newCriteriaName: '',
           newCriteriaDescription: '',
-          newCriteriaWeight: 0.1,
+          newCriteriaWeight: "0.1",
+          weightsError: false,
 
           addNewCriteria() {
               this.showNewCriteriaRow = true;
